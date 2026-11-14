@@ -1,5 +1,7 @@
 # Marketplace: Products Component (NC1605)
 
+> **Academic coursework notice:** this component is part of the **NC1605 group coursework** for **Computer Science (Year 1) at Brunel University of London** (student 2408546) and is submitted for assessment. It is public only so the team can collaborate and the work can be reviewed. Do not copy, reuse or submit any of this code or documentation as your own work.
+
 A local desktop application for managing the product catalogue of an e-commerce marketplace.
 It is the **Products** component only (component 1 of 7 in the NC1605 brief).
 
