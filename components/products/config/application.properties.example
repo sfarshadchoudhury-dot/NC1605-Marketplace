@@ -1,0 +1,19 @@
+# Example settings for the Products component.
+#
+# 1. Copy this file to  config/application.properties  (that copy is git-ignored).
+# 2. Edit the copy. You only need it if your setup differs from the defaults below.
+#
+# Environment variables take priority over this file:
+#   MONGODB_URI, MONGODB_DATABASE, PRODUCTS_DATA_DIR
+#
+# Never commit real passwords. If your MongoDB needs a login, put the full URI
+# (with username and password) in the MONGODB_URI environment variable instead.
+
+# MongoDB connection string. Default: a local MongoDB with no login.
+mongodb.uri=mongodb://localhost:27017
+
+# Database name. The products live in the "products" collection inside it.
+mongodb.database=marketplace
+
+# Folder where uploaded product images are copied (relative to where you start the app, or an absolute path).
+data.dir=data
