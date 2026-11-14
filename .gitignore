@@ -1,0 +1,27 @@
+# Build output
+target/
+bin/
+out/
+*.class
+
+# Libraries (Maven downloads them)
+*.jar
+!**/.mvn/wrapper/*.jar
+
+# Local settings, secrets and test data (never commit these)
+config/application.properties
+.env
+data/
+
+# Personal editor files (Eclipse project files ARE committed: the brief asks for an Eclipse project)
+.idea/
+*.iml
+.vscode/
+.metadata/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Submission zips are made locally
+*.zip
