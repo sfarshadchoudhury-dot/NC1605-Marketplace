@@ -1,6 +1,6 @@
 # NC1605 Marketplace
 
-> **Academic coursework notice:** this repository is part of the **NC1605 university group coursework** and is submitted for assessment. It is public only so the team can collaborate and the work can be reviewed. Do not copy, reuse or submit any of this code or documentation as your own work.
+> **Academic coursework notice:** this repository is part of the **NC1605 group coursework** for **Computer Science (Year 1) at Brunel University of London** and is submitted for assessment. It is public only so the team can collaborate and the work can be reviewed. Do not copy, reuse or submit any of this code or documentation as your own work.
 
 Group coursework for **NC1605**: a desktop e-commerce marketplace built as seven components that share one MongoDB database.
 
