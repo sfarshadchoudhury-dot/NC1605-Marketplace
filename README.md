@@ -24,6 +24,24 @@ When you claim a component, update your own row in this table (see the [Team Gui
 
 ---
 
+## Designs (Figma)
+
+UI designs and click-through prototypes for each component. Anyone with the link can view them.
+
+| Component | Owner | Interactive prototype | Design file |
+|---|---|---|---|
+| Products | Farshad (2408546) | [Click-through demo](https://www.figma.com/proto/uJmMPHItOGvXNZSgwFZb2k/NC1605-Products-UI---Farshad-2408546?node-id=1-845&starting-point-node-id=1-845&scaling=contain) | [Figma file](https://www.figma.com/design/uJmMPHItOGvXNZSgwFZb2k/NC1605-Products-UI---Farshad-2408546) |
+| Customers | _TBC_ | | |
+| Orders | _TBC_ | | |
+| Delivery & Logistics | _TBC_ | | |
+| Inventory / Warehousing | _TBC_ | | |
+| Reviews & Ratings | _TBC_ | | |
+| Finance & Reporting | _TBC_ | | |
+
+When your design is ready, add your links to your row (set the Figma file to “Anyone with the link can view” first).
+
+---
+
 ## Read these first
 
 | Document | What it is for |
