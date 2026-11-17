@@ -133,9 +133,8 @@ Created at start-up by `MongoProductRepository.ensureIndexes()` (safe to repeat)
 | `categories_1` (multikey) | `ensureIndexes` | "All products in category X" |
 | `price_1` | `ensureIndexes` | Price-range queries |
 
-Honest note: the application currently loads the whole collection and filters in Java (section 4), so only `_id_` is exercised today.
-The other three are cheap now and are what you would use when search moves into MongoDB queries; also what a teammate's component would use if it queries `products` directly by category or price.
-If you prefer to avoid unused indexes, delete the three `createIndex` lines in `ensureIndexes()`, this table, and the matching assertions in `MongoProductRepositoryIT.indexesAreCreatedAtConnectTime` (that test checks for them).
+Note: the application currently loads the whole collection and filters in Java (section 4), so only `_id_` is exercised today.
+The other three are cheap to keep and are the ones a MongoDB query would use once search moves into the database, or when another component queries `products` directly by category or price.
 
 ## 4. Search and filtering design
 
@@ -175,7 +174,7 @@ If you prefer to avoid unused indexes, delete the three `createIndex` lines in `
 
 ## 6. Integration points for the other components
 
-This component implements **only Products**. Below is what other components can rely on. Nothing here invents how a teammate must build their part; agree the final details with them and record it in your group evidence.
+This component implements **only Products**. Below is what other components can rely on. The shared names and ID formats are agreed with the other component owners and recorded in `docs/SHARED-CONVENTIONS.md` at the repository root.
 
 ### 6.1 The shared key
 
@@ -197,7 +196,7 @@ Every other component should store the product's ID as a **string field**, ideal
    * (Product has `isActive()`, `isAvailableForSale()`, `getPrice()`, `getStockQuantity()`, `getCategories()`)
 2. **Reading MongoDB directly:** use the `products` collection and the field table in section 3.1 as the contract. Read `price` as `Decimal128` to `BigDecimal`.
 
-Methods **not** implemented (they belong to the integration work, and you would add them with your teammates): changing stock from an order (for example an atomic `adjustStock(productId, delta)`), or listing only sellable products. `isAvailableForSale()` already encodes the rule "active and stock above 0".
+Methods **not** implemented (they belong to the integration work with the other components): changing stock from an order (for example an atomic `adjustStock(productId, delta)`), or listing only sellable products. `isAvailableForSale()` already encodes the rule "active and stock above 0".
 
 ### 6.3 Deleting versus deactivating
 
@@ -237,7 +236,7 @@ JavaFX has one **application thread** that draws the window and handles clicks; 
 | Situation | Exception | What the user sees |
 |---|---|---|
 | Invalid form input | `ValidationException` (holds a `ValidationResult`) | Message under each bad field, red outline, focus moves to the first one |
-| MongoDB unreachable / timed out | `DatabaseException` ("Cannot reach MongoDB... `docker compose up -d`...") | Red "Database problem" panel with **Retry connection**; header pill "Not connected" |
+| MongoDB unreachable / timed out | `DatabaseException` ("Cannot reach MongoDB... `docker compose up -d`...") | Red "Database problem" panel with **Retry connection**; the pill next to the title says "Not connected" |
 | Wrong MongoDB username/password | `DatabaseException` ("MongoDB rejected the username or password...") | same panel |
 | Bad `MONGODB_URI` text | `DatabaseException` ("not a valid MongoDB connection string") | same panel |
 | Product removed by someone else meanwhile | `ProductNotFoundException` | Red status-bar message, list reloads |
@@ -262,7 +261,7 @@ There is **no fallback database**: when MongoDB is down the app says so and wait
 
 ## 11. Future work ideas
 
-For the "Future Work" section of your implementation report: each with how it would be done.
+Each idea says how it would be done.
 
 1. **Move search into MongoDB queries**: build a `Bson` filter in `MongoProductRepository.search(ProductFilter)` using `Filters.regex`, `Filters.in`, `Filters.gte/lte` with `Decimal128`; the indexes in section 3.4 then pay off.
 2. **Separate categories collection** with a management screen (rename, merge, hide).
