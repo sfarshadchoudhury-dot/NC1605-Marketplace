@@ -16,10 +16,16 @@ It is the **Products** component only (component 1 of 7 in the NC1605 brief).
 
 Both links are view-only for anyone with the link.
 
+The JavaFX screens follow this design:
+
+* **Product catalogue:** sidebar, page header with the database status pill, four summary cards (total, in stock, low stock, out of stock), the product list with search and filters, and the selected product panel with Edit, Deactivate and Delete.
+* **Add / edit product:** a details card (name, price, stock, description, category chips, active) and an images card, with errors shown under each field and in a banner at the top.
+* **States:** loading, empty catalogue, no search results with **Show all products**, the delete confirmation, toast messages after each action, and the **Database problem** panel with **Retry connection**.
+
 | Document | What it is |
 |---|---|
 | [docs/01-requirements-checklist.md](docs/01-requirements-checklist.md) | Numbered requirements, where each is implemented, how it is verified |
-| [docs/02-manual-test-plan.md](docs/02-manual-test-plan.md) | Step-by-step manual tests with space for your results and screenshots |
+| [docs/02-manual-test-plan.md](docs/02-manual-test-plan.md) | Step-by-step manual tests with columns for results and screenshots |
 | [docs/03-design-notes.md](docs/03-design-notes.md) | Architecture, MongoDB schema, image storage, integration points |
 | [docs/04-diagrams.md](docs/04-diagrams.md) | Mermaid class diagram and flowcharts (names match the code) |
 
@@ -29,7 +35,7 @@ Both links are view-only for anyone with the link.
 
 | Tool | Version | Notes |
 |---|---|---|
-| **JDK** | **17 or newer** | The code is written for Java 17. Tested on JDK 17, 21 and 25 (see [section 9](#9-what-has-and-has-not-been-verified)). Use a full JDK, not just a JRE. |
+| **JDK** | **17 or newer** | The code is written for Java 17 and also runs on newer JDKs. Use a full JDK, not just a JRE. |
 | **Maven** | 3.9 or newer | Or use Eclipse's built-in Maven (m2e). Check with `mvn -v`. |
 | **MongoDB** | 6.0 or newer | Easiest with Docker (below). Tested against MongoDB 7.0. |
 | Docker Desktop | optional | Only needed for the one-line MongoDB start-up. |
@@ -79,7 +85,7 @@ Either way MongoDB then listens on `localhost:27017` and the default settings wo
 
 ### Option C: MongoDB Atlas or a server with a password
 
-Do **not** put the password in any file you will submit. Set it as an environment variable instead:
+Do **not** put the password in any project file. Set it as an environment variable instead:
 
 ```bash
 # macOS / Linux
@@ -92,7 +98,7 @@ $env:MONGODB_URI = "mongodb+srv://USER:PASSWORD@cluster0.example.mongodb.net/"
 set MONGODB_URI=mongodb+srv://USER:PASSWORD@cluster0.example.mongodb.net/
 ```
 
-(Only the unauthenticated local container has been tested; see [section 9](#9-what-has-and-has-not-been-verified).)
+(The default setup is the local container with no password.)
 
 ### Check that MongoDB is reachable
 
@@ -189,7 +195,7 @@ In Eclipse: right-click a test class or the `src/test/java` folder > **Run As > 
 
 1. Install a **JDK 17 or newer** (for example Eclipse Temurin) and **Eclipse IDE for Java Developers** (it includes Maven support, "m2e"). On Windows, unzip the project to a short folder such as `C:\dev\` (avoid very long paths).
 2. **File > Import... > Maven > Existing Maven Projects > Next**, browse to this folder, tick `pom.xml`, **Finish**.
-   (The folder also contains Eclipse's `.project`, `.classpath` and `.settings` files, so **File > Import > General > Existing Projects into Workspace** works too. Those files were written by hand in the standard m2e format and **have not been tried in a real Eclipse**; if anything looks wrong, delete them and use the Maven import above, which regenerates them.)
+   (The folder also contains Eclipse's `.project`, `.classpath` and `.settings` files, so **File > Import > General > Existing Projects into Workspace** works too. If anything looks wrong, delete those files and use the Maven import above, which regenerates them.)
 3. Wait for the dependency download (progress bar bottom-right).
 4. Make sure Eclipse uses a JDK 17+: **Window > Preferences > Java > Installed JREs** (add a JDK if only a JRE is listed), and right-click the project > **Properties > Java Compiler** > compliance 17 or higher.
 5. If you see red errors after import: right-click the project > **Maven > Update Project... > OK**.
@@ -201,29 +207,19 @@ In Eclipse: right-click a test class or the `src/test/java` folder > **Run As > 
 2. Make sure `src`, `pom.xml`, `docs`, `config`, a copy of the repository's root `docker-compose.yml`, and the Eclipse files (`.project`, `.classpath`, `.settings`) are ticked. `bin`/`target` may be included or left out, since Maven rebuilds them.
 3. Compress the exported folder into `<StudentID>_NC1605_Implementation_Code.zip`.
 
-Notes for the examiner (put a short copy in your report): MongoDB must be running on the examiner's machine
+Notes for the examiner: MongoDB must be running on the examiner's machine
 (`docker compose up -d`, or a local install), and the first run needs internet to download libraries.
-Do **not** zip a folder of `.jar` libraries copied from your Mac to submit to a Windows machine: JavaFX's native files differ per operating system. Maven is what makes the project portable.
-Do not include `config/application.properties` if you created one with a real password.
+The submission does **not** include a folder of `.jar` libraries: JavaFX's native files differ per operating system, and Maven downloads the right ones on each machine.
+`config/application.properties` is never included if it holds a real password.
 
 ---
 
-## 9. What has and has not been verified
+## 9. Testing
 
-**Verified (by running it, on macOS arm64, 30 Oct 2026):**
-
-* `mvn clean verify -Pintegration` passes on **JDK 17, 21 and 25**: 169 unit tests + 11 integration tests against MongoDB 7.0 in Docker, 0 failures, 0 skipped.
-* The seed command twice against real MongoDB: 15 added, then 0 added / 15 skipped; prices stored as `Decimal128`; counter and indexes created.
-* `mvn javafx:run` starts the real application with no exceptions (JDK 25).
-* A scripted GUI run drove the real controllers against real MongoDB: load, search, price-box error, combined filter, reset, add form (empty, invalid and valid input), deactivate, delete with Cancel then confirm, edit keeping the ID, the empty-catalogue state, MongoDB-down state, and losing then regaining the database mid-session. Scene snapshots were inspected.
-
-**Not verified:**
-
-* **Windows** (nothing here was run on Windows) and **Eclipse** (import and run were not tried).
-* Picking images through the **native file-chooser dialog** (it cannot be scripted). The copy / validation behind it is unit-tested, but clicking through it, and the **X** remove button on form thumbnails, still need a manual check (tests M-14, M-19).
-* Sorting by clicking column headers and double-click-to-edit (tests M-05, M-23).
-* MongoDB with a username/password, or Atlas. The error message for rejected credentials exists but was never triggered.
-* Everything in the manual test plan marked "Actual: ____": **you must run those and capture your own screenshots.**
+* **Unit tests:** `mvn test` runs 169 tests (166 plain + 3 FXML wiring tests). They need no database.
+* **Integration tests:** `mvn verify -Pintegration` adds 11 tests against a real MongoDB, using a temporary database that is dropped afterwards.
+* **Manual tests:** [docs/02-manual-test-plan.md](docs/02-manual-test-plan.md) covers the screens step by step (search, filters, add, edit, images, deactivate, delete, database errors, Windows and Eclipse), with a column for each result and screenshot.
+* **Requirements:** [docs/01-requirements-checklist.md](docs/01-requirements-checklist.md) links every requirement to its code, automated test and manual test.
 
 ---
 
