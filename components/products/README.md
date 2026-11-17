@@ -9,6 +9,13 @@ It is the **Products** component only (component 1 of 7 in the NC1605 brief).
 * Add, edit, deactivate and delete products; search and filter; several categories and several images per product.
 * Product IDs look like `PRD-00007`, never change, and are ready for Orders / Reviews / Inventory to link to.
 
+## UI design (Figma)
+
+* **[Interactive prototype](https://www.figma.com/proto/uJmMPHItOGvXNZSgwFZb2k/NC1605-Products-UI---Farshad-2408546?node-id=1-845&starting-point-node-id=1-845&scaling=contain)**: a click-by-click demo of the Products screens. Start on the cover and click **Start the demo**. The path is: add a product (with validation errors), search, no results, edit, delete, and the database-error state with retry.
+* **[Figma design file](https://www.figma.com/design/uJmMPHItOGvXNZSgwFZb2k/NC1605-Products-UI---Farshad-2408546)**: all 13 screens plus the style guide (colours, type, buttons, status badges, shared names). It uses the same Zyno look as the Inventory / Warehousing screens.
+
+Both links are view-only for anyone with the link.
+
 | Document | What it is |
 |---|---|
 | [docs/01-requirements-checklist.md](docs/01-requirements-checklist.md) | Numbered requirements, where each is implemented, how it is verified |
