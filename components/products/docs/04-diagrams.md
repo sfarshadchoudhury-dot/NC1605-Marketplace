@@ -1,11 +1,11 @@
 # 4. Class diagram and flowcharts (Mermaid)
 
 All names (classes, methods, variables, constants) are copied from the source code in `src/main/java/com/marketplace/products`.
-If you rename something in the code, rename it here too, because the design brief requires the diagrams and the code to match.
+The design brief requires the diagrams and the code to match, so a rename in the code is made here too.
 
 **How to view:** paste any diagram block into <https://mermaid.live>, or use a Markdown preview with Mermaid support
 (VS Code: "Markdown Preview Mermaid Support" extension; GitHub renders them automatically).
-For the report, export each diagram as PNG/SVG from mermaid.live, or redraw it in your own tool (draw.io, Figma) if the
+Each diagram can be exported as PNG/SVG from mermaid.live, or redrawn in draw.io or Figma if the
 module expects the lecture-style flowchart symbols (see the note at the end).
 
 Contents
@@ -24,7 +24,7 @@ Contents
 
 ## 1. Class diagram (Products component)
 
-Products-component classes are coloured red (the design brief asks for your own component to be shown in red).
+Products-component classes are coloured red (the design brief asks for the author's own component to be shown in red).
 Only the important attributes and methods are listed; see the source for private helpers.
 
 ```mermaid
@@ -232,11 +232,9 @@ classDiagram
 
 ## 2. Group class diagram skeleton
 
-The brief asks for a **group** diagram showing how your component links to everyone else's, with your own classes in red.
-You cannot finish this alone: the other boxes must be the real classes your teammates design.
-The skeleton below only shows the **one link every other component needs from Products: the product ID**.
-`Order line`, `Review` and `Warehouse stock` are placeholders: replace them with the real class names, attributes and multiplicities
-agreed with your teammates (and delete this note).
+The brief asks for a **group** diagram showing how each component links to the others, with the Products classes in red.
+The skeleton below shows the **one link every other component needs from Products: the product ID**.
+`Order line`, `Review` and `Warehouse stock` stand for classes owned by the other components; their final names, attributes and multiplicities follow `docs/SHARED-CONVENTIONS.md` at the repository root.
 
 ```mermaid
 classDiagram
@@ -248,13 +246,13 @@ classDiagram
         -int stockQuantity
         -boolean active
     }
-    class OrderLine["Order line (teammate class: PLACEHOLDER)"] {
+    class OrderLine["Order line (Orders component)"] {
         -String productId
     }
-    class Review["Review (teammate class: PLACEHOLDER)"] {
+    class Review["Review (Reviews & Ratings component)"] {
         -String productId
     }
-    class WarehouseStock["Warehouse stock (teammate class: PLACEHOLDER)"] {
+    class WarehouseStock["Warehouse stock (Inventory component)"] {
         -String productId
     }
 
@@ -749,8 +747,8 @@ flowchart TD
 flowchart TD
     A([Start onDeleteProduct]) --> B{"a product is selected?"}
     B -- No --> Z([End])
-    B -- Yes --> C["Dialogs.confirmDelete shows the Delete permanently / Cancel dialogue"]
-    C --> D{"user chose Delete permanently?"}
+    B -- Yes --> C["Dialogs.confirmDelete shows the Delete product / Cancel dialogue"]
+    C --> D{"user chose Delete product?"}
     D -- No --> Z
     D -- Yes --> E["beginBusy, AsyncRunner.run productService.deleteProduct productId"]
     E --> F{"succeeded?"}
@@ -765,7 +763,7 @@ flowchart TD
 ```mermaid
 flowchart TD
     A([Start handleFailure error]) --> B{"error is a DatabaseException?"}
-    B -- Yes --> C["connected = false, show the database error panel with Retry connection, status bar error"]
+    B -- Yes --> C["connected = false, show the database error panel with Retry connection, error toast"]
     B -- No --> D{"error is a ProductNotFoundException?"}
     D -- Yes --> E["show message, reloadProducts"]
     D -- No --> F{"error is a ValidationException?"}
@@ -811,5 +809,5 @@ sequenceDiagram
 
 The brief says flowcharts "should follow the same structure and style as presented in lectures".
 The diagrams above use standard flowchart symbols (rounded = start/end, diamond = decision, rectangle = process).
-If your lecture slides use a different convention (for example specific input/output shapes or numbered steps),
-redraw these in that style. The logic and the names are what matter, and they match the code.
+If the lecture slides use a different convention (for example specific input/output shapes or numbered steps),
+these are redrawn in that style. The logic and the names are what matter, and they match the code.
