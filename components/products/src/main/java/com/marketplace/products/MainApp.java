@@ -29,10 +29,10 @@ public class MainApp extends Application {
         MainController controller = loader.getController();
         controller.setAppContext(context);
 
-        stage.setTitle("Marketplace - Product Catalogue");
-        stage.setScene(new Scene(root, 1360, 840));
-        stage.setMinWidth(1040);
-        stage.setMinHeight(660);
+        stage.setTitle("Zyno Marketplace: Products");
+        stage.setScene(new Scene(root, 1440, 900));
+        stage.setMinWidth(1320);
+        stage.setMinHeight(760);
         stage.show();
 
         controller.start();   // connects to MongoDB on a background thread
