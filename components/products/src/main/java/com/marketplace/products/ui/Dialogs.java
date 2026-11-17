@@ -16,18 +16,23 @@ public final class Dialogs {
 
     /** Asks "are you sure?" before a product is permanently deleted. Cancel is the default button. */
     public static boolean confirmDelete(Window owner, Product product) {
-        ButtonType deleteType = new ButtonType("Delete permanently", ButtonBar.ButtonData.OK_DONE);
+        ButtonType deleteType = new ButtonType("Delete product", ButtonBar.ButtonData.OK_DONE);
         ButtonType cancelType = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "", deleteType, cancelType);
         style(alert, owner);
         alert.setTitle("Delete product");
-        alert.setHeaderText("Delete \"" + product.getName() + "\"?");
-        alert.setContentText("Product " + product.getId() + " and all of its images will be permanently removed. "
-                + "This cannot be undone.\n\nTip: choose Deactivate instead if you only want to hide it from sale.");
+        alert.setHeaderText("Delete this product?");
+        alert.setContentText(product.getId() + " · " + product.getName() + "\n\n"
+                + "The product and its images will be removed permanently. Its ID will never be reused, "
+                + "so old orders cannot point to a different product.\n\n"
+                + "Tip: choose Deactivate instead if it might be sold again.");
+        alert.setGraphic(null);
 
         DialogPane pane = alert.getDialogPane();
-        ((Button) pane.lookupButton(deleteType)).setDefaultButton(false);
+        Button deleteButton = (Button) pane.lookupButton(deleteType);
+        deleteButton.setDefaultButton(false);
+        deleteButton.getStyleClass().add("danger-solid-button");
         ((Button) pane.lookupButton(cancelType)).setDefaultButton(true);
 
         return alert.showAndWait().orElse(cancelType) == deleteType;
