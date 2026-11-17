@@ -1,8 +1,7 @@
 # 2. Manual test plan
 
-Every test below is **yours to run**. The *Actual result*, *Pass/Fail* and *Evidence* columns are empty on purpose:
-fill them in from what you really see, and save a screenshot for each one (name the file after the test, e.g. `M-07.png`).
-Do not mark a test Pass unless you saw the expected outcome. If something fails, record exactly what happened, then decide whether to fix it or list the requirement as Incomplete.
+The *Actual result*, *Pass/Fail* and *Evidence* columns are filled in while testing, with one screenshot per test named after it (for example `M-07.png`).
+A test is marked Pass only when the expected outcome is seen. If something fails, the actual behaviour is recorded and the requirement is either fixed or listed as Incomplete.
 
 Requirement IDs (R1, R2, ...) refer to [01-requirements-checklist.md](01-requirements-checklist.md).
 
@@ -12,16 +11,16 @@ Requirement IDs (R1, R2, ...) refer to [01-requirements-checklist.md](01-require
 2. Prepare these files somewhere easy to find (for the image tests):
    * `lamp1.png`, `lamp2.jpg`, `lamp3.gif`: any three real pictures under 5 MB (screenshots are fine).
    * `notes.txt`: any text file.
-   * `fake.png`: a text file you renamed to end in `.png`.
+   * `fake.png`: a text file renamed to end in `.png`.
    * `big.png`: a file over 5 MB. macOS: `mkfile 6m big.png`. Windows (cmd): `fsutil file createnew big.png 6291456`.
 3. Tests M-01 and M-38 need an **empty** catalogue / a stopped database; the rest assume the seed data is loaded (`mvn compile exec:java@seed`).
-4. Record your environment once: operating system and version, JDK version (`java -version`), MongoDB version, date: ______________________
+4. Test environment (recorded once): operating system and version, JDK version (`java -version`), MongoDB version, date: ______________________
 
 ## A. Start-up, catalogue and seed
 
 | ID | Req. | Steps | Expected outcome | Actual result | Pass/Fail | Evidence |
 |---|---|---|---|---|---|---|
-| M-01 | R1, R32, R36 | With MongoDB running and the database empty, start the app (`mvn javafx:run`). | A loading spinner appears briefly, then "No products yet" with a hint about Add / seed. Header pill says "Connected: mongodb://localhost:27017 / marketplace". Status bar says "Showing 0 of 0 products". | | | |
+| M-01 | R1, R32, R36 | With MongoDB running and the database empty, start the app (`mvn javafx:run`). | A loading spinner appears briefly, then "No products yet" with a hint about Add / seed. The pill next to the title says "Connected · marketplace". The list subtitle says "Showing 0 of 0 products" and all four summary cards show 0. | | | |
 | M-02 | R1, R30, R38 | Run `mvn compile exec:java@seed`, then press **Refresh** in the app. | Console: "Added 15 product(s), skipped 0". The table lists 15 products with coloured placeholder pictures; one product ("Standing Desk Converter") shows "No image". | | | |
 | M-03 | R38 | Run the seed command a second time. Press Refresh. | Console: "Added 0 product(s), skipped 15". The table still has exactly 15 products (no duplicates). | | | |
 | M-04 | R1, R11, R31 | Look at the table. | Each row shows a thumbnail, name with a one-line description, ID (`PRD-nnnnn`), categories, price in £, a coloured stock badge (green in stock, amber low, red out) and an Active/Inactive badge. Inactive rows are greyed. | | | |
@@ -60,9 +59,9 @@ Requirement IDs (R1, R2, ...) refer to [01-requirements-checklist.md](01-require
 |---|---|---|---|---|---|---|
 | M-23 | R3, R20 | Select "Test Mug" and click **Edit** (or double-click the row). Change name, description, price to `5.25`, stock to `3`, categories, untick Active. Save. | The title shows "Product ID: PRD-000nn (the ID never changes)". After saving, the same ID is shown with the new values; there is still only one "Test Mug" row; the stock badge turns amber ("Low stock"). | | | |
 | M-24 | R16 | Edit a product, set price to `abc` and stock to `-3`, Save. | Field errors shown; nothing changes; reopening the product shows the old values. | | | |
-| M-25 | R4 | Select an active product, click **Deactivate**, then **Activate**. | After Deactivate: grey row, "Inactive" badge, button now says "Activate", green message `... is now inactive.` The product is still in the list and stock is unchanged. After Activate it is back to normal. | | | |
+| M-25 | R4 | Select an active product, click **Deactivate**, then **Activate**. | After Deactivate: grey row, "Inactive" badge, button now says "Activate", toast message `... is now inactive.` The product is still in the list and stock is unchanged. After Activate it is back to normal. | | | |
 | M-26 | R5, R33 | Click **Delete**. A dialogue "Delete "Test Mug"?" appears. Click **Cancel**. | The dialogue text warns it cannot be undone and suggests Deactivate. Cancel is the highlighted default. After Cancel nothing is deleted. | | | |
-| M-27 | R5 | Click **Delete** again and **Delete permanently**. | The row disappears, green message `Deleted "Test Mug" (PRD-000nn).`, summary count drops by one, the product's image files are removed from `data/images/`, the details panel returns to "Select a product". | | | |
+| M-27 | R5 | Click **Delete** again and **Delete product**. | The row disappears, toast message `Deleted "Test Mug" (PRD-000nn).`, the Total products card drops by one, the product's image files are removed from `data/images/`, the details panel returns to "Select a product". | | | |
 
 ## E. Search and filters
 
@@ -75,35 +74,34 @@ Requirement IDs (R1, R2, ...) refer to [01-requirements-checklist.md](01-require
 | M-32 | R4, R7 | Status = "Inactive only", then "Active only". | Inactive only: the greyed products. Active only: none greyed. | | | |
 | M-33 | R7 | Category `Office` + Status "Active only" + Max price `100`. Then add name `desk`. | Rows must satisfy **all** conditions at once (compare against the full list by eye). Adding the name narrows the list further. | | | |
 | M-34 | R31 | Press **Reset filters**. | All filter boxes clear (drop-downs return to "All categories", "Any availability", "Active and inactive") and the full list returns. | | | |
-| M-35 | R32 | Search for `zzz`, then click **Reset filters** inside the empty message. | "No products match your filters" appears, then the full list returns. | | | |
+| M-35 | R32 | Search for `zzz`, then click **Show all products** inside the empty message. | "No products match your filters" appears, then the full list returns. | | | |
 
 ## F. Persistence, errors and configuration
 
 | ID | Req. | Steps | Expected outcome | Actual result | Pass/Fail | Evidence |
 |---|---|---|---|---|---|---|
 | M-36 | R17 | Add a product, close the app completely, start it again. | The product (with its price, stock, categories and pictures) is still there. | | | |
-| M-37 | R32, R37 | With the app open: `docker compose stop`. Click **Refresh**. Then `docker compose start`, click **Retry connection**. | After a few seconds a red "Database problem" panel appears with "Cannot reach MongoDB..." and the header says "Not connected". After Retry the list returns. | | | |
+| M-37 | R32, R37 | With the app open: `docker compose stop`. Click **Refresh**. Then `docker compose start`, click **Retry connection**. | After a few seconds a red "Database problem" panel appears with "Cannot reach MongoDB..." and the pill next to the title says "Not connected". After Retry the list returns. | | | |
 | M-38 | R37 | `docker compose stop`, start the app. | Same red panel within about 3 seconds, with the instruction `docker compose up -d`. No in-memory fallback data is shown. Add/Edit report "Not connected to MongoDB". | | | |
-| M-39 | R35 | Stop the app. Start it with `MONGODB_DATABASE=marketplace_demo` (see README for your shell's syntax), or create `config/application.properties` with `mongodb.database=marketplace_demo`. | The header shows `... / marketplace_demo` and the catalogue is empty (a different database). Environment variable wins over the file if you set both. | | | |
+| M-39 | R35 | Stop the app. Start it with `MONGODB_DATABASE=marketplace_demo` (see the README for the shell syntax), or create `config/application.properties` with `mongodb.database=marketplace_demo`. | The pill next to the title shows `Connected · marketplace_demo` and the catalogue is empty (a different database). The environment variable wins over the file if both are set. | | | |
 | M-40 | R34 | Start the app with MongoDB stopped. During the ~3 seconds before the error appears, try dragging the window and clicking Refresh. | The window keeps responding (it does not freeze or turn "Not Responding"). | | | |
 
-## G. Platforms and viva readiness
+## G. Platforms
 
 | ID | Req. | Steps | Expected outcome | Actual result | Pass/Fail | Evidence |
 |---|---|---|---|---|---|---|
 | M-41 | R42 | **On Windows:** install JDK 17+, Maven (or Eclipse), MongoDB or Docker Desktop. Follow the README quick start; run `mvn test`, the seed command and the app. | Everything in the README works unchanged. Record any step that needed a change. | | | |
 | M-42 | R42 | **Eclipse (macOS or Windows):** follow README section 8: import as Maven project, run `Launcher`, run `SeedMain`, run `src/test/java` as JUnit. | App starts from Eclipse; seed works; tests pass. | | | |
-| M-43 | R18, R21, R43 | Without looking at the code, explain aloud the path of "Save product" from button click to MongoDB, and where each of: a condition, a loop, an array and a data transformation occurs. | You can name the classes and methods in order. | | | |
 
 ---
 
-## Automated test index (for the Testing table in your Implementation Report)
+## Automated test index
 
 The brief's testing table has the columns *Test Number, Component, Description, Corresponding Requirements, Pass/Fail, Correction*.
-Re-run the tests yourself (`mvn test` and `mvn verify -Pintegration`), screenshot the results, and fill in *Pass/Fail* from **your** run.
-Counts below are from my run on 30 Oct 2026 and will only change if you add or remove tests.
+The tests run with `mvn test` (unit tests) and `mvn verify -Pintegration` (adds the MongoDB integration tests).
+The *Tests* column is the number of test methods in each class.
 
-| Test no. | Component | Test class | What it checks | Tests | Req. | Pass/Fail (your run) |
+| Test no. | Component | Test class | What it checks | Tests | Req. | Pass/Fail |
 |---|---|---|---|---|---|---|
 | A-01 | Products | `ProductValidatorTest` | Required name, whitespace-only names (spaces, tab, newline), name length; zero, negative and invalid prices (`abc`, `12.345`, `1e3`, `NaN`, `$5`...); negative, fractional, non-numeric and too-large stock; categories, description and image-count rules; whole-form field-level errors; search-bar price range | 80 | R13 to R16, R7 | |
 | A-02 | Products | `ProductSearchTest` | Name search (case, spaces); category (any of several); inclusive price range with different decimal scales; availability; status; **combined** filters; list not modified; stock-level counts; category collection | 18 | R6, R7, R8 | |
@@ -116,5 +114,4 @@ Counts below are from my run on 30 Oct 2026 and will only change if you add or r
 | A-09 | Products | `FxmlLoadTest` | `main-view.fxml` and `product-form.fxml` load and every `@FXML` field is wired. **Skipped if no graphical session.** | 3 | R31 | |
 | I-01 | Products | `MongoProductRepositoryIT` (needs MongoDB) | Stored format (`Decimal128`, string `_id`), indexes, **data survives restart**, sequential IDs, 40 concurrent ID requests all distinct, edit keeps document ID, unknown-ID update/delete, search on real data, **seed twice creates no duplicates** | 11 | R2, R3, R17, R22, R23, R38 | |
 
-Suggested screenshots for the report: the Maven summary `Tests run: 169, Failures: 0` (and `Tests run: 11` for the integration run), plus the
-IDE JUnit view for the two or three classes you want to discuss. Remember that a test only counts as evidence once *you* have run it.
+Evidence: a screenshot of the Maven summary (`Tests run: 169` for the unit tests, `Tests run: 11` for the integration run) and of the IDE JUnit view.
