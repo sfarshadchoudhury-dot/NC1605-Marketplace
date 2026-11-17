@@ -67,6 +67,12 @@ public class MainController {
     @FXML private Label priceFilterError;
     @FXML private Button resetButton;
 
+    // ---- summary cards ----
+    @FXML private Label statTotal;
+    @FXML private Label statInStock;
+    @FXML private Label statLow;
+    @FXML private Label statOut;
+
     // ---- catalogue table and its state layers ----
     @FXML private TableView<Product> productTable;
     @FXML private TableColumn<Product, Product> imageColumn;
@@ -99,7 +105,7 @@ public class MainController {
     @FXML private Label detailDates;
     @FXML private Button toggleActiveButton;
 
-    // ---- status bar ----
+    // ---- toast message and busy spinner ----
     @FXML private ProgressIndicator busyIndicator;
     @FXML private Label statusMessage;
     @FXML private Label summaryLabel;
@@ -140,13 +146,16 @@ public class MainController {
         statusCombo.valueProperty().addListener((obs, oldValue, newValue) -> onFilterChosen());
 
         busyIndicator.managedProperty().bind(busyIndicator.visibleProperty());   // takes no space when hidden
+        // The toast is only drawn while it has a message to show.
+        statusMessage.visibleProperty().bind(statusMessage.textProperty().isNotEmpty());
+        statusMessage.managedProperty().bind(statusMessage.visibleProperty());
         messageTimer.setOnFinished(event -> statusMessage.setText(""));
         productTable.getSelectionModel().selectedItemProperty()
                 .addListener((obs, oldProduct, newProduct) -> showDetails(newProduct));
 
         showDetails(null);
         showView(View.LOADING);
-        summaryLabel.setText("");
+        clearSummary();
     }
 
     /** Called by MainApp once the AppContext is available. */
@@ -163,12 +172,12 @@ public class MainController {
         SortedList<Product> sortedProducts = new SortedList<>(shownProducts);
         sortedProducts.comparatorProperty().bind(productTable.comparatorProperty());
         productTable.setItems(sortedProducts);
-        productTable.setFixedCellSize(68);
+        productTable.setFixedCellSize(60);
         productTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         productTable.setPlaceholder(new Label(""));   // our own state layers replace the default placeholder
 
         configureColumn(imageColumn, product -> ProductImageLoader.createView(
-                context.getImageStorage(), product.getFirstImagePath(), 56, 56), null);
+                context.getImageStorage(), product.getFirstImagePath(), 40, 40), null);
 
         configureColumn(nameColumn, this::buildNameNode,
                 Comparator.comparing((Product p) -> p.getName().toLowerCase(Locale.ROOT)));
@@ -264,7 +273,7 @@ public class MainController {
         ProductFilter filterToUse = filter != null ? filter : new ProductFilter();
 
         showView(View.LOADING);
-        setConnectionStatus("Connecting to " + context.getConfig().getSafeMongoUri() + " ...", "db-connecting");
+        setConnectionStatus("Connecting...", "db-connecting");
         long ticket = ++searchTicket;
         beginBusy();
         AsyncRunner.run(() -> {
@@ -276,8 +285,7 @@ public class MainController {
                 return;
             }
             connected = true;
-            setConnectionStatus("Connected: " + context.getConfig().getSafeMongoUri()
-                    + " / " + context.getConfig().getDatabaseName(), "db-connected");
+            setConnectionStatus("Connected · " + context.getConfig().getDatabaseName(), "db-connected");
             applyResult(result, null);
         }, error -> {
             endBusy();
@@ -351,11 +359,22 @@ public class MainController {
         }
     }
 
+    /** Fills the list subtitle and the four summary cards (catalogue-wide numbers). */
     private void updateSummary(SearchResult result) {
         int[] counts = result.stockLevelCounts();
-        summaryLabel.setText("Showing " + result.matches().size() + " of " + result.totalCount() + " products"
-                + "   |   " + counts[StockLevel.LOW_STOCK.ordinal()] + " low stock"
-                + "   |   " + counts[StockLevel.OUT_OF_STOCK.ordinal()] + " out of stock");
+        summaryLabel.setText("Showing " + result.matches().size() + " of " + result.totalCount() + " products");
+        statTotal.setText(String.valueOf(result.totalCount()));
+        statInStock.setText(String.valueOf(counts[StockLevel.IN_STOCK.ordinal()]));
+        statLow.setText(String.valueOf(counts[StockLevel.LOW_STOCK.ordinal()]));
+        statOut.setText(String.valueOf(counts[StockLevel.OUT_OF_STOCK.ordinal()]));
+    }
+
+    /** Used while loading and when the database cannot be reached. */
+    private void clearSummary() {
+        summaryLabel.setText("");
+        for (Label stat : new Label[] {statTotal, statInStock, statLow, statOut}) {
+            stat.setText("-");
+        }
     }
 
     /** Rebuilds the category drop-down, keeping the user's choice. Returns true if the choice had to be reset. */
@@ -634,8 +653,8 @@ public class MainController {
             connected = false;
             errorMessage.setText(error.getMessage());
             showView(View.ERROR);
-            setConnectionStatus("Not connected to MongoDB", "db-error");
-            summaryLabel.setText("");
+            setConnectionStatus("Not connected", "db-error");
+            clearSummary();
             showMessage("Database error. See the message in the catalogue area.", MessageType.ERROR);
         } else if (error instanceof ProductNotFoundException) {
             showMessage(error.getMessage(), MessageType.ERROR);
