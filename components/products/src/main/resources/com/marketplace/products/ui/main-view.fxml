@@ -16,8 +16,9 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<!-- Layout follows the Figma design (Zyno style): sidebar, page header, summary cards,
-     product list card and the selected product panel. -->
+<!-- Layout follows the Figma design (Zyno style): sidebar, page header with the platform search and avatar,
+     summary cards, product list card (with paging) and the selected product panel.
+     The add / edit form is shown inside this same window, in place of the catalogue (see MainController). -->
 <BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.marketplace.products.ui.MainController"
             stylesheets="@application.css" styleClass="app-root" prefWidth="1440" prefHeight="900">
@@ -55,170 +56,205 @@
     <center>
         <VBox styleClass="content" spacing="16">
 
-            <!-- Page header: title, database status, refresh and add -->
-            <HBox alignment="CENTER_LEFT" spacing="10">
+            <!-- Page header: title on the left; platform search, avatar and the page buttons on the right.
+                 The title and subtitle change when the add / edit form is open. -->
+            <HBox spacing="10">
                 <VBox spacing="4">
-                    <HBox spacing="12" alignment="CENTER_LEFT">
-                        <Label text="Product catalogue" styleClass="page-title"/>
-                        <Label fx:id="dbStatusLabel" styleClass="db-status"/>
-                    </HBox>
-                    <Label text="Add, edit and search the products sold across the marketplace."
+                    <Label fx:id="pageTitle" text="Product catalogue" styleClass="page-title"/>
+                    <Label fx:id="pageSubtitle" text="Add, edit and search the products sold across the marketplace."
                            styleClass="page-subtitle"/>
                 </VBox>
                 <Region HBox.hgrow="ALWAYS"/>
-                <Button fx:id="refreshButton" text="Refresh" onAction="#onRefresh" styleClass="secondary-button"/>
-                <Button fx:id="addButton" text="+  Add product" onAction="#onAddProduct" styleClass="primary-button"/>
-            </HBox>
-
-            <!-- Summary cards: catalogue-wide numbers from the last search -->
-            <HBox spacing="16">
-                <VBox styleClass="stat-card, stat-total" spacing="4" HBox.hgrow="ALWAYS" maxWidth="Infinity">
-                    <Label text="Total products" styleClass="stat-label"/>
-                    <Label fx:id="statTotal" text="-" styleClass="stat-value"/>
-                    <Label text="In the whole catalogue" styleClass="stat-note, note-accent"/>
-                </VBox>
-                <VBox styleClass="stat-card, stat-ok" spacing="4" HBox.hgrow="ALWAYS" maxWidth="Infinity">
-                    <Label text="In stock (6+)" styleClass="stat-label"/>
-                    <Label fx:id="statInStock" text="-" styleClass="stat-value"/>
-                    <Label text="Ready to sell" styleClass="stat-note, note-ok"/>
-                </VBox>
-                <VBox styleClass="stat-card, stat-low" spacing="4" HBox.hgrow="ALWAYS" maxWidth="Infinity">
-                    <Label text="Low stock (1 to 5)" styleClass="stat-label"/>
-                    <Label fx:id="statLow" text="-" styleClass="stat-value"/>
-                    <Label text="Needs restocking" styleClass="stat-note, note-low"/>
-                </VBox>
-                <VBox styleClass="stat-card, stat-out" spacing="4" HBox.hgrow="ALWAYS" maxWidth="Infinity">
-                    <Label text="Out of stock" styleClass="stat-label"/>
-                    <Label fx:id="statOut" text="-" styleClass="stat-value"/>
-                    <Label text="Not available for sale" styleClass="stat-note, note-out"/>
+                <VBox spacing="12" alignment="TOP_RIGHT">
+                    <HBox spacing="12" alignment="CENTER_RIGHT">
+                        <TextField fx:id="globalSearchField" promptText="Search anything..." prefWidth="230"
+                                   styleClass="search-field, global-search"/>
+                        <Label text="FC" styleClass="avatar"/>
+                    </HBox>
+                    <HBox fx:id="catalogueActions" spacing="10" alignment="CENTER_RIGHT">
+                        <ProgressIndicator fx:id="busyIndicator" prefWidth="18" prefHeight="18" visible="false"/>
+                        <Button fx:id="refreshButton" text="Refresh" onAction="#onRefresh"
+                                styleClass="secondary-button"/>
+                        <Button fx:id="addButton" text="+  Add product" onAction="#onAddProduct"
+                                styleClass="primary-button"/>
+                    </HBox>
                 </VBox>
             </HBox>
 
-            <HBox spacing="16" VBox.vgrow="ALWAYS">
+            <!-- The page area: the catalogue, or the add / edit form placed on top of it -->
+            <StackPane fx:id="pageHolder" VBox.vgrow="ALWAYS">
+                <VBox fx:id="catalogueView" spacing="16">
 
-                <!-- Product list: search, filters (all combined with AND) and the table -->
-                <VBox styleClass="card, list-card" spacing="12" HBox.hgrow="ALWAYS">
-                    <HBox alignment="CENTER_LEFT" spacing="12">
-                        <VBox spacing="2">
-                            <Label text="Product list" styleClass="card-title"/>
-                            <Label fx:id="summaryLabel" styleClass="muted-text"/>
+                    <!-- Summary cards: catalogue-wide numbers from the last search -->
+                    <HBox spacing="16">
+                        <VBox styleClass="stat-card, stat-total" spacing="4" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                            <Label text="Total products" styleClass="stat-label"/>
+                            <Label fx:id="statTotal" text="-" styleClass="stat-value"/>
+                            <Label text="In the whole catalogue" styleClass="stat-note, note-ok"/>
                         </VBox>
-                        <Region HBox.hgrow="ALWAYS"/>
-                        <TextField fx:id="searchField" promptText="Search by product name..." prefWidth="280"
-                                   styleClass="search-field"/>
+                        <VBox styleClass="stat-card, stat-ok" spacing="4" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                            <Label text="In stock (6+)" styleClass="stat-label"/>
+                            <Label fx:id="statInStock" text="-" styleClass="stat-value"/>
+                            <Label text="Ready to sell" styleClass="stat-note, note-plain"/>
+                        </VBox>
+                        <VBox styleClass="stat-card, stat-low" spacing="4" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                            <Label text="Low stock (1 to 5)" styleClass="stat-label"/>
+                            <Label fx:id="statLow" text="-" styleClass="stat-value"/>
+                            <Label text="Needs restocking" styleClass="stat-note, note-low"/>
+                        </VBox>
+                        <VBox styleClass="stat-card, stat-out" spacing="4" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                            <Label text="Out of stock" styleClass="stat-label"/>
+                            <Label fx:id="statOut" text="-" styleClass="stat-value"/>
+                            <Label text="Not available for sale" styleClass="stat-note, note-out"/>
+                        </VBox>
                     </HBox>
 
-                    <HBox spacing="10" alignment="CENTER_LEFT">
-                        <ComboBox fx:id="categoryCombo" prefWidth="170"/>
-                        <ComboBox fx:id="availabilityCombo" prefWidth="160"/>
-                        <ComboBox fx:id="statusCombo" prefWidth="160"/>
-                        <TextField fx:id="minPriceField" prefWidth="86" promptText="Min £"/>
-                        <TextField fx:id="maxPriceField" prefWidth="86" promptText="Max £"/>
-                        <Button fx:id="resetButton" text="Reset filters" onAction="#onResetFilters"
-                                styleClass="ghost-button"/>
-                    </HBox>
-                    <Label fx:id="priceFilterError" styleClass="error-label" visible="false" managed="false"/>
+                    <HBox spacing="16" VBox.vgrow="ALWAYS">
 
-                    <!-- Table with loading / empty / no-match / error states layered on top -->
-                    <StackPane VBox.vgrow="ALWAYS">
-                        <TableView fx:id="productTable">
-                            <columns>
-                                <TableColumn fx:id="idColumn" text="ID" prefWidth="90" minWidth="80"/>
-                                <TableColumn fx:id="imageColumn" text="" prefWidth="56" minWidth="56" maxWidth="56"
-                                             resizable="false"/>
-                                <TableColumn fx:id="nameColumn" text="PRODUCT" prefWidth="250" minWidth="160"/>
-                                <TableColumn fx:id="categoriesColumn" text="CATEGORY" prefWidth="140" minWidth="100"/>
-                                <TableColumn fx:id="priceColumn" text="PRICE" prefWidth="84" minWidth="75"/>
-                                <TableColumn fx:id="stockColumn" text="STOCK" prefWidth="120" minWidth="100"/>
-                                <TableColumn fx:id="statusColumn" text="STATUS" prefWidth="84" minWidth="75"/>
-                            </columns>
-                        </TableView>
+                        <!-- Product list, with the toast message floating over its bottom edge -->
+                        <StackPane HBox.hgrow="ALWAYS">
+                            <VBox styleClass="card, list-card" spacing="12">
+                                <HBox alignment="CENTER_LEFT" spacing="12">
+                                    <VBox spacing="2">
+                                        <Label text="Product list" styleClass="card-title"/>
+                                        <Label fx:id="summaryLabel" styleClass="muted-text"/>
+                                    </VBox>
+                                    <Region HBox.hgrow="ALWAYS"/>
+                                    <TextField fx:id="searchField" promptText="Search by product name..."
+                                               prefWidth="270" styleClass="search-field"/>
+                                </HBox>
 
-                        <VBox fx:id="loadingBox" styleClass="state-box" alignment="CENTER" spacing="12"
-                              visible="false" managed="false">
-                            <ProgressIndicator prefWidth="42" prefHeight="42"/>
-                            <Label text="Loading products..." styleClass="state-text"/>
-                        </VBox>
+                                <!-- Filters (all combined with AND) -->
+                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                    <ComboBox fx:id="categoryCombo" prefWidth="140"/>
+                                    <ComboBox fx:id="availabilityCombo" prefWidth="145"/>
+                                    <ComboBox fx:id="statusCombo" prefWidth="110"/>
+                                    <TextField fx:id="minPriceField" prefWidth="88" promptText="Min £"/>
+                                    <TextField fx:id="maxPriceField" prefWidth="88" promptText="Max £"/>
+                                    <Button fx:id="resetButton" text="Reset filters" onAction="#onResetFilters"
+                                            styleClass="ghost-button"/>
+                                </HBox>
+                                <Label fx:id="priceFilterError" styleClass="error-label" visible="false"
+                                       managed="false"/>
 
-                        <VBox fx:id="emptyBox" styleClass="state-box" alignment="CENTER" spacing="10"
-                              visible="false" managed="false">
-                            <Label text="?" styleClass="state-icon"/>
-                            <Label fx:id="emptyTitle" styleClass="state-title"/>
-                            <Label fx:id="emptyMessage" styleClass="state-text" wrapText="true" maxWidth="380"/>
-                            <Button fx:id="emptyResetButton" text="Show all products" onAction="#onResetFilters"
-                                    styleClass="primary-button"/>
-                        </VBox>
+                                <!-- Table with loading / empty / no-match / error states layered on top -->
+                                <StackPane VBox.vgrow="ALWAYS">
+                                    <TableView fx:id="productTable">
+                                        <columns>
+                                            <TableColumn fx:id="idColumn" text="ID" prefWidth="95" minWidth="85"/>
+                                            <TableColumn fx:id="nameColumn" text="PRODUCT" prefWidth="250"
+                                                         minWidth="170"/>
+                                            <TableColumn fx:id="categoriesColumn" text="CATEGORY" prefWidth="150"
+                                                         minWidth="100"/>
+                                            <TableColumn fx:id="priceColumn" text="PRICE" prefWidth="72"
+                                                         minWidth="66"/>
+                                            <TableColumn fx:id="stockColumn" text="STOCK" prefWidth="58"
+                                                         minWidth="52"/>
+                                            <TableColumn fx:id="statusColumn" text="STATUS" prefWidth="100"
+                                                         minWidth="90"/>
+                                        </columns>
+                                    </TableView>
 
-                        <VBox fx:id="errorBox" styleClass="state-box, error-box" alignment="CENTER" spacing="10"
-                              visible="false" managed="false">
-                            <Label text="!" styleClass="state-icon, state-icon-error"/>
-                            <Label text="Database problem" styleClass="state-title"/>
-                            <Label fx:id="errorMessage" styleClass="state-text" wrapText="true" maxWidth="460"/>
-                            <Label text="docker compose up -d" styleClass="command-label"/>
-                            <Label text="Start MongoDB with the command above, then retry." styleClass="state-text"/>
-                            <Button fx:id="retryButton" text="Retry connection" onAction="#onRetry"
-                                    styleClass="primary-button"/>
-                        </VBox>
-                    </StackPane>
-                </VBox>
+                                    <VBox fx:id="loadingBox" styleClass="state-box" alignment="CENTER" spacing="12"
+                                          visible="false" managed="false">
+                                        <ProgressIndicator prefWidth="42" prefHeight="42"/>
+                                        <Label text="Loading products..." styleClass="state-text"/>
+                                    </VBox>
 
-                <!-- Selected product -->
-                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="card, details-scroll"
-                            prefWidth="370" minWidth="350" maxWidth="390">
-                    <StackPane>
-                        <VBox fx:id="detailsPlaceholder" styleClass="state-box" alignment="CENTER" spacing="8">
-                            <Label text="Select a product" styleClass="state-title"/>
-                            <Label text="Choose a row in the table to see its images, details and actions."
-                                   styleClass="state-text" wrapText="true" maxWidth="260"/>
-                        </VBox>
+                                    <VBox fx:id="emptyBox" styleClass="state-box" alignment="CENTER" spacing="10"
+                                          visible="false" managed="false">
+                                        <Label text="?" styleClass="state-icon"/>
+                                        <Label fx:id="emptyTitle" styleClass="state-title"/>
+                                        <Label fx:id="emptyMessage" styleClass="state-text" wrapText="true"
+                                               maxWidth="380"/>
+                                        <Button fx:id="emptyResetButton" text="Show all products"
+                                                onAction="#onResetFilters" styleClass="primary-button"/>
+                                    </VBox>
 
-                        <VBox fx:id="detailsContent" spacing="12">
-                            <padding>
-                                <Insets top="18" right="20" bottom="18" left="20"/>
-                            </padding>
-                            <Label text="SELECTED PRODUCT" styleClass="field-caption"/>
-                            <StackPane fx:id="mainImageHolder" alignment="CENTER"/>
-                            <FlowPane fx:id="thumbnailStrip" hgap="8" vgap="8"/>
+                                    <VBox fx:id="errorBox" styleClass="state-box, error-box" alignment="CENTER"
+                                          spacing="10" visible="false" managed="false">
+                                        <Label text="!" styleClass="state-icon, state-icon-error"/>
+                                        <Label text="Database problem" styleClass="state-title"/>
+                                        <Label fx:id="errorMessage" styleClass="state-text" wrapText="true"
+                                               maxWidth="460"/>
+                                        <Label text="docker compose up -d" styleClass="command-label"/>
+                                        <Label text="Start MongoDB with the command above, then retry."
+                                               styleClass="state-text"/>
+                                        <Button fx:id="retryButton" text="Retry connection" onAction="#onRetry"
+                                                styleClass="primary-button"/>
+                                    </VBox>
+                                </StackPane>
 
-                            <VBox spacing="3">
-                                <Label fx:id="detailName" styleClass="detail-name" wrapText="true"/>
-                                <Label fx:id="detailId" styleClass="id-label"/>
+                                <!-- Paging: "Showing 1 to 8 of 15 products" and the page buttons -->
+                                <HBox fx:id="pagerBar" spacing="6" alignment="CENTER_LEFT" styleClass="pager-bar">
+                                    <Label fx:id="pageInfoLabel" styleClass="muted-text"/>
+                                    <Region HBox.hgrow="ALWAYS"/>
+                                    <HBox fx:id="pageButtons" spacing="6" alignment="CENTER_RIGHT"/>
+                                </HBox>
                             </VBox>
 
-                            <HBox spacing="8" alignment="CENTER_LEFT">
-                                <Label fx:id="detailPrice" styleClass="detail-price"/>
-                                <Region HBox.hgrow="ALWAYS"/>
-                                <Label fx:id="detailStatusBadge"/>
-                                <Label fx:id="detailStockBadge"/>
-                            </HBox>
+                            <!-- Toast: drawn over the bottom of the list only while there is a message -->
+                            <Label fx:id="statusMessage" styleClass="toast" StackPane.alignment="BOTTOM_CENTER"
+                                   mouseTransparent="true">
+                                <StackPane.margin>
+                                    <Insets bottom="10"/>
+                                </StackPane.margin>
+                            </Label>
+                        </StackPane>
 
-                            <FlowPane fx:id="detailCategories" hgap="6" vgap="6"/>
-                            <Label text="DESCRIPTION" styleClass="field-caption"/>
-                            <Label fx:id="detailDescription" styleClass="detail-description" wrapText="true"/>
-                            <Label fx:id="detailDates" styleClass="muted-text" wrapText="true"/>
+                        <!-- Selected product -->
+                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="card, details-scroll"
+                                    prefWidth="320" minWidth="300" maxWidth="340">
+                            <StackPane>
+                                <VBox fx:id="detailsPlaceholder" styleClass="state-box" alignment="CENTER" spacing="8">
+                                    <Label text="Select a product" styleClass="state-title"/>
+                                    <Label text="Choose a row in the table to see its images, details and actions."
+                                           styleClass="state-text" wrapText="true" maxWidth="240"/>
+                                </VBox>
 
-                            <HBox spacing="8" styleClass="detail-actions">
-                                <Button fx:id="editButton" text="Edit" onAction="#onEditProduct"
-                                        styleClass="primary-button"/>
-                                <Button fx:id="toggleActiveButton" onAction="#onToggleActive"
-                                        styleClass="secondary-button"/>
-                                <Region HBox.hgrow="ALWAYS"/>
-                                <Button fx:id="deleteButton" text="Delete" onAction="#onDeleteProduct"
-                                        styleClass="danger-button"/>
-                            </HBox>
-                            <Label text="Deactivate hides a product from sale but keeps old orders valid."
-                                   styleClass="muted-text" wrapText="true"/>
-                        </VBox>
-                    </StackPane>
-                </ScrollPane>
-            </HBox>
+                                <VBox fx:id="detailsContent" spacing="12">
+                                    <padding>
+                                        <Insets top="18" right="18" bottom="18" left="18"/>
+                                    </padding>
+                                    <Label text="SELECTED PRODUCT" styleClass="field-caption"/>
+                                    <StackPane fx:id="mainImageHolder" alignment="CENTER"/>
+                                    <FlowPane fx:id="thumbnailStrip" hgap="8" vgap="8"/>
 
-            <!-- Messages appear here as a small toast; the spinner shows while the database is busy -->
-            <HBox styleClass="status-bar" alignment="CENTER_LEFT" spacing="10">
-                <ProgressIndicator fx:id="busyIndicator" prefWidth="16" prefHeight="16" visible="false"/>
-                <Label fx:id="statusMessage" styleClass="toast"/>
-                <Region HBox.hgrow="ALWAYS"/>
-            </HBox>
+                                    <VBox spacing="4">
+                                        <Label fx:id="detailName" styleClass="detail-name" wrapText="true"/>
+                                        <!-- "PRD-00001 · created 30 Oct 2026" -->
+                                        <Label fx:id="detailId" styleClass="muted-text"/>
+                                    </VBox>
+
+                                    <HBox spacing="8" alignment="CENTER_LEFT">
+                                        <Label fx:id="detailPrice" styleClass="detail-price"/>
+                                        <Label fx:id="detailStockBadge"/>
+                                        <Label fx:id="detailStatusBadge"/>
+                                        <Region HBox.hgrow="ALWAYS"/>
+                                        <Label fx:id="detailUnits" styleClass="muted-text"/>
+                                    </HBox>
+
+                                    <FlowPane fx:id="detailCategories" hgap="6" vgap="6"/>
+                                    <Label text="DESCRIPTION" styleClass="field-caption"/>
+                                    <Label fx:id="detailDescription" styleClass="detail-description" wrapText="true"/>
+
+                                    <HBox spacing="8" styleClass="detail-actions">
+                                        <Button fx:id="editButton" text="Edit" onAction="#onEditProduct"
+                                                styleClass="primary-button"/>
+                                        <Button fx:id="toggleActiveButton" onAction="#onToggleActive"
+                                                styleClass="secondary-button"/>
+                                        <Region HBox.hgrow="ALWAYS"/>
+                                        <Button fx:id="deleteButton" text="Delete" onAction="#onDeleteProduct"
+                                                styleClass="danger-button"/>
+                                    </HBox>
+                                    <Label text="Deactivate hides it from sale but keeps old orders valid."
+                                           styleClass="muted-text" wrapText="true"/>
+                                </VBox>
+                            </StackPane>
+                        </ScrollPane>
+                    </HBox>
+                </VBox>
+            </StackPane>
         </VBox>
     </center>
 </BorderPane>

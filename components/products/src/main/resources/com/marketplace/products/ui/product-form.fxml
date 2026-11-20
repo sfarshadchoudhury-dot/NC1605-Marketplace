@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
@@ -8,113 +7,131 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<!-- Add / edit form, laid out like the Figma design: a details card and an images card. -->
-<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.marketplace.products.ui.ProductFormController"
-            stylesheets="@application.css" styleClass="app-root" prefWidth="1100" prefHeight="780">
+<!-- Add / edit form, laid out like the Figma design. It is shown inside the main window, under the page header
+     (which MainController changes to "Add product" / "Edit product"), with a breadcrumb, a details card,
+     an images card and a footer bar. -->
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.marketplace.products.ui.ProductFormController"
+      stylesheets="@application.css" styleClass="form-page" spacing="14">
 
-    <top>
-        <VBox styleClass="form-header" spacing="4">
-            <Label text="Products" styleClass="breadcrumb"/>
-            <Label fx:id="titleLabel" styleClass="page-title"/>
-            <Label fx:id="idLabel" styleClass="page-subtitle"/>
-            <Label fx:id="formError" styleClass="error-banner" visible="false" managed="false" wrapText="true"
-                   maxWidth="Infinity"/>
-        </VBox>
-    </top>
+    <!-- Breadcrumb and the way back -->
+    <HBox alignment="CENTER_LEFT">
+        <Label fx:id="breadcrumbLabel" styleClass="breadcrumb"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="backButton" text="←  Back to catalogue" onAction="#onCancel" styleClass="link-button"/>
+    </HBox>
 
-    <center>
-        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="form-scroll">
-            <HBox spacing="16">
-                <padding>
-                    <Insets top="4" right="28" bottom="16" left="28"/>
-                </padding>
+    <!-- "Please fix 4 problems before saving. Nothing has been saved." (or a database problem) -->
+    <Label fx:id="formError" styleClass="error-banner" visible="false" managed="false" wrapText="true"
+           maxWidth="Infinity"/>
 
-                <!-- Product details -->
-                <VBox styleClass="card, form-card" spacing="16" HBox.hgrow="ALWAYS" prefWidth="620">
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="form-scroll" VBox.vgrow="ALWAYS">
+        <HBox spacing="16">
+
+            <!-- Product details -->
+            <VBox styleClass="card, form-card" spacing="16" HBox.hgrow="ALWAYS" prefWidth="620">
+                <VBox spacing="3">
                     <Label text="Product details" styleClass="card-title"/>
+                    <Label fx:id="detailsSubtitle" styleClass="muted-text"/>
+                </VBox>
 
-                    <VBox spacing="6">
-                        <Label text="NAME *" styleClass="field-caption"/>
-                        <TextField fx:id="nameField" promptText="e.g. Ergonomic Desk Lamp"/>
-                        <Label fx:id="nameError" styleClass="error-label" visible="false" managed="false"
+                <VBox spacing="6">
+                    <Label text="NAME *" styleClass="field-caption"/>
+                    <TextField fx:id="nameField" promptText="e.g. Ergonomic Desk Lamp"/>
+                    <Label fx:id="nameError" styleClass="error-label" visible="false" managed="false"
+                           wrapText="true"/>
+                </VBox>
+
+                <HBox spacing="16">
+                    <VBox spacing="6" HBox.hgrow="ALWAYS">
+                        <Label text="PRICE (£) *" styleClass="field-caption"/>
+                        <TextField fx:id="priceField" promptText="e.g. 19.99"/>
+                        <Label fx:id="priceHint" text="Greater than £0.00, up to 2 decimal places"
+                               styleClass="hint-text"/>
+                        <Label fx:id="priceError" styleClass="error-label" visible="false" managed="false"
                                wrapText="true"/>
                     </VBox>
+                    <VBox spacing="6" HBox.hgrow="ALWAYS">
+                        <Label text="STOCK QUANTITY *" styleClass="field-caption"/>
+                        <TextField fx:id="stockField" promptText="whole number, e.g. 25"/>
+                        <Label fx:id="stockHint" text="Whole number, 0 or more" styleClass="hint-text"/>
+                        <Label fx:id="stockError" styleClass="error-label" visible="false" managed="false"
+                               wrapText="true"/>
+                    </VBox>
+                </HBox>
 
-                    <HBox spacing="16">
-                        <VBox spacing="6" HBox.hgrow="ALWAYS">
-                            <Label text="PRICE (£) *" styleClass="field-caption"/>
-                            <TextField fx:id="priceField" promptText="e.g. 19.99"/>
-                            <Label fx:id="priceError" styleClass="error-label" visible="false" managed="false"
-                                   wrapText="true"/>
-                        </VBox>
-                        <VBox spacing="6" HBox.hgrow="ALWAYS">
-                            <Label text="STOCK QUANTITY *" styleClass="field-caption"/>
-                            <TextField fx:id="stockField" promptText="whole number, e.g. 25"/>
-                            <Label fx:id="stockError" styleClass="error-label" visible="false" managed="false"
-                                   wrapText="true"/>
-                        </VBox>
+                <VBox spacing="6">
+                    <Label text="DESCRIPTION" styleClass="field-caption"/>
+                    <TextArea fx:id="descriptionArea" prefRowCount="3" wrapText="true"
+                              promptText="Optional: what is this product?"/>
+                    <Label fx:id="descriptionError" styleClass="error-label" visible="false" managed="false"
+                           wrapText="true"/>
+                </VBox>
+
+                <VBox spacing="8">
+                    <Label text="CATEGORIES *  (CHOOSE ONE OR MORE)" styleClass="field-caption"/>
+                    <FlowPane fx:id="categoryBox" hgap="8" vgap="8" styleClass="category-box"/>
+                    <Label fx:id="categoriesError" styleClass="error-label" visible="false" managed="false"
+                           wrapText="true"/>
+                    <HBox spacing="12">
+                        <TextField fx:id="newCategoryField" promptText="Add a new category..."
+                                   onAction="#onAddCategory" prefWidth="290"/>
+                        <Button fx:id="addCategoryButton" text="Add category" onAction="#onAddCategory"
+                                styleClass="secondary-button"/>
                     </HBox>
-
-                    <VBox spacing="6">
-                        <Label text="DESCRIPTION" styleClass="field-caption"/>
-                        <TextArea fx:id="descriptionArea" prefRowCount="3" wrapText="true"
-                                  promptText="Optional: what is this product?"/>
-                        <Label fx:id="descriptionError" styleClass="error-label" visible="false" managed="false"
-                               wrapText="true"/>
-                    </VBox>
-
-                    <VBox spacing="8">
-                        <Label text="CATEGORIES *  (CHOOSE ONE OR MORE)" styleClass="field-caption"/>
-                        <FlowPane fx:id="categoryBox" hgap="8" vgap="8" styleClass="category-box"/>
-                        <Label fx:id="categoriesError" styleClass="error-label" visible="false" managed="false"
-                               wrapText="true"/>
-                        <HBox spacing="8">
-                            <TextField fx:id="newCategoryField" promptText="Add a new category..."
-                                       onAction="#onAddCategory" prefWidth="300"/>
-                            <Button fx:id="addCategoryButton" text="Add category" onAction="#onAddCategory"
-                                    styleClass="secondary-button"/>
-                        </HBox>
-                    </VBox>
-
-                    <CheckBox fx:id="activeCheck" text="Active (shown in the catalogue and available for sale)"/>
                 </VBox>
 
-                <!-- Images -->
-                <VBox styleClass="card, form-card" spacing="12" prefWidth="380" minWidth="360" maxWidth="400">
+                <CheckBox fx:id="activeCheck" text="Active (shown in the catalogue and available for sale)"/>
+            </VBox>
+
+            <!-- Images -->
+            <VBox styleClass="card, form-card" spacing="12" prefWidth="360" minWidth="340" maxWidth="380">
+                <VBox spacing="3">
                     <Label text="Images" styleClass="card-title"/>
-                    <Label text="The first image is the catalogue thumbnail." styleClass="muted-text" wrapText="true"/>
-                    <Button fx:id="addImagesButton" text="Add images..." onAction="#onAddImages"
-                            styleClass="drop-zone-button" maxWidth="Infinity"/>
-                    <Label text="PNG, JPG, GIF or BMP, up to 5 MB each." styleClass="muted-text" wrapText="true"/>
-                    <StackPane fx:id="previewHolder" alignment="CENTER"/>
-                    <FlowPane fx:id="thumbnailStrip" hgap="8" vgap="8"/>
-                    <Label fx:id="imageCountLabel" styleClass="muted-text"/>
-                    <Label text="Click a thumbnail to preview it; use X to remove it." styleClass="muted-text"
-                           wrapText="true"/>
-                    <Label fx:id="imagesError" styleClass="error-label" visible="false" managed="false"
+                    <Label text="The first image is the catalogue thumbnail." styleClass="muted-text"
                            wrapText="true"/>
                 </VBox>
-            </HBox>
-        </ScrollPane>
-    </center>
 
-    <bottom>
-        <HBox styleClass="form-footer" spacing="10" alignment="CENTER_RIGHT">
-            <ProgressIndicator fx:id="busyIndicator" prefWidth="20" prefHeight="20" visible="false"/>
-            <Label text="Nothing is saved until you press Save." styleClass="muted-text"/>
-            <Region HBox.hgrow="ALWAYS"/>
-            <Button fx:id="cancelButton" text="Cancel" onAction="#onCancel" cancelButton="true"
-                    styleClass="secondary-button"/>
-            <Button fx:id="saveButton" text="Save product" onAction="#onSave" defaultButton="true"
-                    styleClass="primary-button"/>
+                <!-- Dashed drop zone: the icon, "Add images..." and the allowed files are inside it -->
+                <Button fx:id="addImagesButton" onAction="#onAddImages" styleClass="drop-zone-button"
+                        maxWidth="Infinity" contentDisplay="GRAPHIC_ONLY">
+                    <graphic>
+                        <VBox spacing="6" alignment="CENTER">
+                            <Label text="↑" styleClass="drop-zone-icon"/>
+                            <Label text="Add images..." styleClass="drop-zone-title"/>
+                            <Label text="PNG, JPG, GIF or BMP · up to 5 MB each" styleClass="drop-zone-note"/>
+                        </VBox>
+                    </graphic>
+                </Button>
+
+                <Label fx:id="noImagesLabel"
+                       text="No images yet. Products without images show a placeholder in the catalogue."
+                       styleClass="muted-text" wrapText="true"/>
+                <FlowPane fx:id="thumbnailStrip" hgap="8" vgap="8"/>
+                <Label text="Click a thumbnail to preview it; use × to remove it." styleClass="hint-text"
+                       wrapText="true"/>
+                <!-- Large preview, only shown after a thumbnail is clicked -->
+                <StackPane fx:id="previewHolder" alignment="CENTER"/>
+                <Label fx:id="imagesError" styleClass="error-label" visible="false" managed="false"
+                       wrapText="true"/>
+            </VBox>
         </HBox>
-    </bottom>
-</BorderPane>
+    </ScrollPane>
+
+    <!-- Footer bar: status text on the left, Cancel and Save on the right -->
+    <HBox styleClass="card, form-footer" spacing="10" alignment="CENTER_LEFT">
+        <Label fx:id="footerStatus" text="Nothing is saved until you press Save product." styleClass="muted-text"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <ProgressIndicator fx:id="busyIndicator" prefWidth="20" prefHeight="20" visible="false"/>
+        <Button fx:id="cancelButton" text="Cancel" onAction="#onCancel" cancelButton="true"
+                styleClass="secondary-button"/>
+        <Button fx:id="saveButton" text="Save product" onAction="#onSave" defaultButton="true"
+                styleClass="primary-button"/>
+    </HBox>
+</VBox>

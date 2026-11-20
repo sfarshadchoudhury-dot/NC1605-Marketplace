@@ -14,7 +14,6 @@ import javafx.animation.PauseTransition;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -28,6 +27,8 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
@@ -41,7 +42,9 @@ import java.util.Locale;
 import java.util.function.Function;
 
 /**
- * Controller for main-view.fxml: the catalogue table, search/filter bar and details panel.
+ * Controller for main-view.fxml: the catalogue table (8 products per page, newest first), search/filter bar,
+ * details panel and toast messages. The add / edit form opens inside the same window, in place of the
+ * catalogue, like the Figma design.
  * Every database call goes through AsyncRunner so the window never freezes; the result handlers
  * run on the JavaFX thread and are the only places that update the controls.
  */
@@ -53,9 +56,19 @@ public class MainController {
     private enum MessageType { SUCCESS, ERROR, INFO }
 
     private static final String ALL_CATEGORIES = "All categories";
+    private static final int PAGE_SIZE = 8;                       // rows per page, as in the Figma design
+    private static final String CATALOGUE_TITLE = "Product catalogue";
+    private static final String CATALOGUE_SUBTITLE = "Add, edit and search the products sold across the marketplace.";
 
-    // ---- header and filter bar ----
-    @FXML private Label dbStatusLabel;
+    // ---- page header ----
+    @FXML private Label pageTitle;
+    @FXML private Label pageSubtitle;
+    @FXML private TextField globalSearchField;
+    @FXML private HBox catalogueActions;
+    @FXML private StackPane pageHolder;
+    @FXML private VBox catalogueView;
+
+    // ---- filter bar ----
     @FXML private Button refreshButton;
     @FXML private Button addButton;
     @FXML private TextField searchField;
@@ -75,7 +88,6 @@ public class MainController {
 
     // ---- catalogue table and its state layers ----
     @FXML private TableView<Product> productTable;
-    @FXML private TableColumn<Product, Product> imageColumn;
     @FXML private TableColumn<Product, Product> nameColumn;
     @FXML private TableColumn<Product, Product> idColumn;
     @FXML private TableColumn<Product, Product> categoriesColumn;
@@ -89,6 +101,9 @@ public class MainController {
     @FXML private Button emptyResetButton;
     @FXML private VBox errorBox;
     @FXML private Label errorMessage;
+    @FXML private HBox pagerBar;
+    @FXML private Label pageInfoLabel;
+    @FXML private HBox pageButtons;
 
     // ---- details panel ----
     @FXML private VBox detailsPlaceholder;
@@ -101,8 +116,8 @@ public class MainController {
     @FXML private Label detailStatusBadge;
     @FXML private Label detailStockBadge;
     @FXML private FlowPane detailCategories;
+    @FXML private Label detailUnits;
     @FXML private Label detailDescription;
-    @FXML private Label detailDates;
     @FXML private Button toggleActiveButton;
 
     // ---- toast message and busy spinner ----
@@ -116,8 +131,16 @@ public class MainController {
     private long searchTicket;                 // lets us ignore a slow search that finishes after a newer one
     private boolean suppressFilterEvents;      // true while the code (not the user) changes the filter controls
     private List<String> knownCategories = new ArrayList<>();
+    private ProductFormController openForm;    // the add / edit form while it is open, otherwise null
+    private Node openFormNode;
 
+    // All products that match the filters (newest first, or in the order of the clicked column) ...
+    private final List<Product> matchingProducts = new ArrayList<>();
+    // ... and the up-to-8 of them on the current page, which is what the table shows.
     private final ObservableList<Product> shownProducts = FXCollections.observableArrayList();
+    private int currentPage;
+    private int catalogueTotal;
+    private boolean paging;                    // true while showPage changes the table, so the sort policy ignores it
     private final PauseTransition searchDelay = new PauseTransition(Duration.millis(300));
     private final PauseTransition messageTimer = new PauseTransition(Duration.seconds(6));
 
@@ -145,10 +168,16 @@ public class MainController {
         availabilityCombo.valueProperty().addListener((obs, oldValue, newValue) -> onFilterChosen());
         statusCombo.valueProperty().addListener((obs, oldValue, newValue) -> onFilterChosen());
 
+        // The platform search in the header searches this component's products: it fills the list's search box.
+        globalSearchField.textProperty().addListener((obs, oldText, newText) -> {
+            if (openForm == null) {
+                searchField.setText(newText);
+            }
+        });
+
         busyIndicator.managedProperty().bind(busyIndicator.visibleProperty());   // takes no space when hidden
         // The toast is only drawn while it has a message to show.
         statusMessage.visibleProperty().bind(statusMessage.textProperty().isNotEmpty());
-        statusMessage.managedProperty().bind(statusMessage.visibleProperty());
         messageTimer.setOnFinished(event -> statusMessage.setText(""));
         productTable.getSelectionModel().selectedItemProperty()
                 .addListener((obs, oldProduct, newProduct) -> showDetails(newProduct));
@@ -169,15 +198,18 @@ public class MainController {
     }
 
     private void configureTable() {
-        SortedList<Product> sortedProducts = new SortedList<>(shownProducts);
-        sortedProducts.comparatorProperty().bind(productTable.comparatorProperty());
-        productTable.setItems(sortedProducts);
-        productTable.setFixedCellSize(60);
+        productTable.setItems(shownProducts);
+        // Clicking a column header sorts ALL matching products (not only the visible page), then shows page 1.
+        productTable.setSortPolicy(table -> {
+            if (!paging) {
+                currentPage = 0;
+                showPage(null);
+            }
+            return true;
+        });
+        productTable.setFixedCellSize(50);
         productTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         productTable.setPlaceholder(new Label(""));   // our own state layers replace the default placeholder
-
-        configureColumn(imageColumn, product -> ProductImageLoader.createView(
-                context.getImageStorage(), product.getFirstImagePath(), 40, 40), null);
 
         configureColumn(nameColumn, this::buildNameNode,
                 Comparator.comparing((Product p) -> p.getName().toLowerCase(Locale.ROOT)));
@@ -195,11 +227,14 @@ public class MainController {
         configureColumn(priceColumn, product -> label(Formatters.price(product.getPrice()), "price-cell"),
                 Comparator.comparing(Product::getPrice));      // BigDecimal sorts numerically
 
-        configureColumn(stockColumn, product -> stockBadge(product, true),
+        // Stock is a plain number, amber when low and red when out of stock.
+        configureColumn(stockColumn, product -> label(String.valueOf(product.getStockQuantity()),
+                        stockNumberClass(product.getStockLevel())),
                 Comparator.comparingInt(Product::getStockQuantity));
 
-        configureColumn(statusColumn, product -> statusBadge(product),
-                Comparator.comparing(Product::isActive));
+        // Status is the stock level badge (In stock / Low stock / Out of stock), or "Inactive" for a hidden product.
+        configureColumn(statusColumn, MainController::statusBadge,
+                Comparator.comparing((Product p) -> p.isActive() ? p.getStockLevel().ordinal() : -1));
 
         // Inactive rows are greyed out; double-click a row to edit it.
         productTable.setRowFactory(table -> {
@@ -220,8 +255,6 @@ public class MainController {
             });
             return row;
         });
-
-        nameColumn.setSortType(TableColumn.SortType.ASCENDING);
     }
 
     /** Each column shows a node built from the whole Product, so one helper configures them all. */
@@ -252,14 +285,16 @@ public class MainController {
         }
     }
 
+    /** The product cell: a small tile with the first letter of the name, then the name on one line. */
     private Node buildNameNode(Product product) {
-        Label name = label(product.getName(), "cell-name");
-        Label description = label(product.getDescription(), "cell-description");
-        VBox box = new VBox(2, name, description);
+        String name = product.getName().trim();
+        Label tile = label(name.isEmpty() ? "?" : name.substring(0, 1).toUpperCase(Locale.ROOT), "name-tile");
+        tile.setMinSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+        Label nameLabel = label(product.getName(), "cell-name");
+        // The label needs a width limit for the "..." to appear when the name is too long.
+        nameLabel.maxWidthProperty().bind(nameColumn.widthProperty().subtract(56));
+        HBox box = new HBox(10, tile, nameLabel);
         box.setAlignment(Pos.CENTER_LEFT);
-        // Labels inside the box need a width limit for the "..." to appear.
-        name.maxWidthProperty().bind(nameColumn.widthProperty().subtract(24));
-        description.maxWidthProperty().bind(nameColumn.widthProperty().subtract(24));
         return box;
     }
 
@@ -273,7 +308,6 @@ public class MainController {
         ProductFilter filterToUse = filter != null ? filter : new ProductFilter();
 
         showView(View.LOADING);
-        setConnectionStatus("Connecting...", "db-connecting");
         long ticket = ++searchTicket;
         beginBusy();
         AsyncRunner.run(() -> {
@@ -285,7 +319,6 @@ public class MainController {
                 return;
             }
             connected = true;
-            setConnectionStatus("Connected · " + context.getConfig().getDatabaseName(), "db-connected");
             applyResult(result, null);
         }, error -> {
             endBusy();
@@ -326,7 +359,9 @@ public class MainController {
         knownCategories = result.categories();
         boolean categoryWasReset = refreshCategoryCombo(result.categories());
 
-        shownProducts.setAll(result.matches());
+        matchingProducts.clear();
+        matchingProducts.addAll(result.matches());
+        currentPage = 0;
         if (result.totalCount() == 0) {
             emptyTitle.setText("No products yet");
             emptyMessage.setText("Click \"+ Add product\" to create the first one, or load the sample catalogue "
@@ -344,16 +379,8 @@ public class MainController {
             showView(View.TABLE);
         }
         updateSummary(result);
+        showPage(selectProductId);   // jumps to the page that holds this product, if it is given
 
-        if (selectProductId != null) {
-            for (Product product : shownProducts) {
-                if (product.getId().equals(selectProductId)) {
-                    productTable.getSelectionModel().select(product);
-                    productTable.scrollTo(product);
-                    break;
-                }
-            }
-        }
         if (categoryWasReset) {
             reloadProducts(null);   // the chosen category no longer exists, so search again with "All categories"
         }
@@ -362,16 +389,113 @@ public class MainController {
     /** Fills the list subtitle and the four summary cards (catalogue-wide numbers). */
     private void updateSummary(SearchResult result) {
         int[] counts = result.stockLevelCounts();
-        summaryLabel.setText("Showing " + result.matches().size() + " of " + result.totalCount() + " products");
+        catalogueTotal = result.totalCount();
         statTotal.setText(String.valueOf(result.totalCount()));
         statInStock.setText(String.valueOf(counts[StockLevel.IN_STOCK.ordinal()]));
         statLow.setText(String.valueOf(counts[StockLevel.LOW_STOCK.ordinal()]));
         statOut.setText(String.valueOf(counts[StockLevel.OUT_OF_STOCK.ordinal()]));
     }
 
+    /** "15 products · sorted by newest" (or "3 of 15 products · ..." while filters are on). */
+    private void updateListSubtitle() {
+        int total = catalogueTotal;
+        int matches = matchingProducts.size();
+        String count = matches == total ? matches + plural(matches, " product", " products")
+                : matches + " of " + total + " products";
+        String order = "newest";
+        if (!productTable.getSortOrder().isEmpty()) {
+            TableColumn<Product, ?> column = productTable.getSortOrder().get(0);
+            order = column.getText().toLowerCase(Locale.ROOT)
+                    + (column.getSortType() == TableColumn.SortType.DESCENDING ? " (high to low)" : "");
+        }
+        summaryLabel.setText(count + " · sorted by " + order);
+    }
+
+    // ======================================================================
+    // Paging
+    // ======================================================================
+
+    /**
+     * Sorts the matching products (newest first unless a column header was clicked), puts one page of them
+     * in the table and redraws the page buttons. If a product ID is given, the page that holds it is shown
+     * and the row is selected; otherwise the current page is shown and the selection is kept if possible.
+     */
+    private void showPage(String selectProductId) {
+        paging = true;
+        try {
+            fillPage(selectProductId);
+        } finally {
+            paging = false;
+        }
+        updateListSubtitle();
+    }
+
+    private void fillPage(String selectProductId) {
+        // matchingProducts stays newest first; a clicked column only changes the order of this copy.
+        List<Product> ordered = new ArrayList<>(matchingProducts);
+        Comparator<Product> comparator = productTable.getComparator();
+        if (comparator != null) {
+            ordered.sort(comparator);
+        }
+
+        String keepSelected = selectProductId != null ? selectProductId : selectedProductId();
+        if (selectProductId != null) {
+            for (int i = 0; i < ordered.size(); i++) {
+                if (ordered.get(i).getId().equals(selectProductId)) {
+                    currentPage = i / PAGE_SIZE;
+                    break;
+                }
+            }
+        }
+        int pageCount = Math.max(1, (ordered.size() + PAGE_SIZE - 1) / PAGE_SIZE);
+        currentPage = Math.max(0, Math.min(currentPage, pageCount - 1));
+        int from = currentPage * PAGE_SIZE;
+        int to = Math.min(from + PAGE_SIZE, ordered.size());
+
+        shownProducts.setAll(ordered.subList(from, to));
+        productTable.getSelectionModel().clearSelection();
+        for (Product product : shownProducts) {
+            if (product.getId().equals(keepSelected)) {
+                productTable.getSelectionModel().select(product);
+                break;
+            }
+        }
+        if (productTable.getSelectionModel().getSelectedItem() == null && !shownProducts.isEmpty()) {
+            productTable.getSelectionModel().select(shownProducts.get(0));   // the design always shows one product
+        }
+
+        pageInfoLabel.setText(ordered.isEmpty() ? ""
+                : "Showing " + (from + 1) + " to " + to + " of " + ordered.size() + " products");
+        pageButtons.getChildren().clear();
+        if (currentPage > 0) {
+            pageButtons.getChildren().add(pageButton("←", currentPage - 1, false));
+        }
+        for (int page = 0; page < pageCount && ordered.size() > 0; page++) {
+            pageButtons.getChildren().add(pageButton(String.valueOf(page + 1), page, page == currentPage));
+        }
+        if (currentPage < pageCount - 1) {
+            pageButtons.getChildren().add(pageButton("→", currentPage + 1, false));
+        }
+    }
+
+    private Button pageButton(String text, int page, boolean current) {
+        Button button = new Button(text);
+        button.getStyleClass().add("page-button");
+        if (current) {
+            button.getStyleClass().add("page-current");
+        }
+        button.setOnAction(event -> {
+            currentPage = page;
+            showPage(null);
+        });
+        return button;
+    }
+
     /** Used while loading and when the database cannot be reached. */
     private void clearSummary() {
         summaryLabel.setText("");
+        pageInfoLabel.setText("");
+        pageButtons.getChildren().clear();
         for (Label stat : new Label[] {statTotal, statInStock, statLow, statOut}) {
             stat.setText("-");
         }
@@ -480,7 +604,7 @@ public class MainController {
     private void onRefresh() {
         if (connected) {
             reloadProducts(null);
-            showMessage("Catalogue refreshed.", MessageType.INFO);
+            showMessage("Catalogue refreshed", MessageType.INFO);
         } else {
             connectAndLoad();
         }
@@ -508,23 +632,60 @@ public class MainController {
         }
     }
 
-    /** Opens the add/edit dialogue (existing == null means "add"). Blocks until it is closed. */
+    /**
+     * Shows the add / edit form in place of the catalogue (existing == null means "add").
+     * The sidebar and page header stay, like the Figma design; the form calls closeProductForm when it is done.
+     */
     private void openProductForm(Product existing) {
         if (!connected) {
             showMessage("Not connected to MongoDB. Press Retry connection first.", MessageType.ERROR);
             return;
         }
+        if (openForm != null) {
+            return;
+        }
         try {
-            Product saved = ProductFormController.open(context, addButton.getScene().getWindow(), existing,
-                    knownCategories);
-            if (saved != null) {
-                showMessage((existing == null ? "Added \"" : "Saved changes to \"") + saved.getName()
-                        + "\" (" + saved.getId() + ").", MessageType.SUCCESS);
-                reloadProducts(saved.getId());
-            }
+            ProductFormController.LoadedForm loaded = ProductFormController.load(context, existing, knownCategories,
+                    saved -> closeProductForm(existing, saved));
+            openForm = loaded.controller();
+            openFormNode = loaded.root();
         } catch (IOException e) {
             Dialogs.showError(addButton.getScene().getWindow(), "Could not open the form",
                     "The product form failed to load: " + e.getMessage());
+            return;
+        }
+        messageTimer.stop();
+        statusMessage.setText("");
+        pageTitle.setText(existing == null ? "Add product" : "Edit product");
+        pageSubtitle.setText(existing == null
+                ? "Fields marked * are required. The product ID is created when you save."
+                : "Fields marked * are required. The product ID never changes.");
+        setLayerVisible(catalogueActions, false);
+        setLayerVisible(catalogueView, false);
+        pageHolder.getChildren().add(openFormNode);
+        openForm.focusFirstField();
+    }
+
+    /** Called by the form when it is saved (saved != null) or cancelled (saved == null). */
+    private void closeProductForm(Product existing, Product saved) {
+        pageHolder.getChildren().remove(openFormNode);
+        openForm = null;
+        openFormNode = null;
+        pageTitle.setText(CATALOGUE_TITLE);
+        pageSubtitle.setText(CATALOGUE_SUBTITLE);
+        setLayerVisible(catalogueActions, true);
+        setLayerVisible(catalogueView, true);
+        if (saved != null) {
+            showMessage(saved.getId() + " · " + saved.getName()
+                    + (existing == null ? " added to the catalogue" : " saved"), MessageType.SUCCESS);
+            reloadProducts(saved.getId());
+        }
+    }
+
+    /** Called when the window closes: throws away images copied by a form that was never saved. */
+    public void discardOpenForm() {
+        if (openForm != null) {
+            openForm.discardNewImagesNow();
         }
     }
 
@@ -539,7 +700,7 @@ public class MainController {
         beginBusy();
         AsyncRunner.run(() -> context.getProductService().setActive(productId, makeActive), updated -> {
             endBusy();
-            showMessage("\"" + updated.getName() + "\" is now " + (makeActive ? "active." : "inactive."),
+            showMessage(updated.getId() + " · " + updated.getName() + (makeActive ? " activated" : " deactivated"),
                     MessageType.SUCCESS);
             reloadProducts(updated.getId());
         }, error -> {
@@ -566,7 +727,7 @@ public class MainController {
         }, deletedId -> {
             endBusy();
             productTable.getSelectionModel().clearSelection();
-            showMessage("Deleted \"" + productName + "\" (" + deletedId + ").", MessageType.SUCCESS);
+            showMessage(deletedId + " · " + productName + " deleted", MessageType.SUCCESS);
             reloadProducts(null);
         }, error -> {
             endBusy();
@@ -589,19 +750,19 @@ public class MainController {
         }
 
         detailName.setText(product.getName());
-        detailId.setText(product.getId());
+        detailId.setText(product.getId() + "  ·  created " + Formatters.date(product.getCreatedAt()));
         detailPrice.setText(Formatters.price(product.getPrice()));
-        applyBadge(detailStatusBadge, product.isActive() ? "Active" : "Inactive",
-                product.isActive() ? "badge-active" : "badge-inactive");
-        applyBadge(detailStockBadge, stockText(product, false), stockBadgeClass(product.getStockLevel()));
+        applyBadge(detailStockBadge, product.getStockLevel().getLabel(), stockBadgeClass(product.getStockLevel()));
+        // The extra "Inactive" badge only appears for a product that is hidden from sale.
+        applyBadge(detailStatusBadge, "Inactive", "badge-inactive");
+        setLayerVisible(detailStatusBadge, !product.isActive());
+        detailUnits.setText(product.getStockQuantity() + plural(product.getStockQuantity(), " unit", " units"));
 
         detailCategories.getChildren().clear();
         for (String category : product.getCategories()) {
             detailCategories.getChildren().add(label(category, "chip"));
         }
         detailDescription.setText(product.getDescription().isEmpty() ? "No description." : product.getDescription());
-        detailDates.setText("Created " + Formatters.dateTime(product.getCreatedAt())
-                + "   |   Updated " + Formatters.dateTime(product.getUpdatedAt()));
         toggleActiveButton.setText(product.isActive() ? "Deactivate" : "Activate");
 
         showDetailImages(product, 0);
@@ -612,7 +773,7 @@ public class MainController {
         List<String> images = product.getImagePaths();
         String selected = images.isEmpty() ? null : images.get(selectedIndex);
         mainImageHolder.getChildren().setAll(
-                ProductImageLoader.createView(context.getImageStorage(), selected, 320, 240));
+                ProductImageLoader.createView(context.getImageStorage(), selected, 264, 160));
 
         thumbnailStrip.getChildren().clear();
         if (images.size() < 2) {
@@ -620,7 +781,7 @@ public class MainController {
         }
         for (int i = 0; i < images.size(); i++) {
             final int index = i;
-            Node thumb = ProductImageLoader.createView(context.getImageStorage(), images.get(i), 64, 48);
+            Node thumb = ProductImageLoader.createView(context.getImageStorage(), images.get(i), 46, 46);
             StackPane cell = new StackPane(thumb);
             cell.getStyleClass().add("thumb-cell");
             if (i == selectedIndex) {
@@ -653,7 +814,6 @@ public class MainController {
             connected = false;
             errorMessage.setText(error.getMessage());
             showView(View.ERROR);
-            setConnectionStatus("Not connected", "db-error");
             clearSummary();
             showMessage("Database error. See the message in the catalogue area.", MessageType.ERROR);
         } else if (error instanceof ProductNotFoundException) {
@@ -681,18 +841,12 @@ public class MainController {
                 statusMessage.getStyleClass().add("status-info");
                 break;
         }
-        statusMessage.setText(text);
+        statusMessage.setText((type == MessageType.SUCCESS ? "✓  " : type == MessageType.ERROR ? "!  " : "") + text);
         if (type == MessageType.ERROR) {
             messageTimer.stop();     // errors stay until replaced
         } else {
             messageTimer.playFromStart();
         }
-    }
-
-    private void setConnectionStatus(String text, String styleClass) {
-        dbStatusLabel.getStyleClass().removeAll("db-connected", "db-connecting", "db-error");
-        dbStatusLabel.getStyleClass().add(styleClass);
-        dbStatusLabel.setText(text);
     }
 
     private void beginBusy() {
@@ -720,26 +874,31 @@ public class MainController {
         return label;
     }
 
-    private static Label statusBadge(Product product) {
-        Label badge = new Label(product.isActive() ? "Active" : "Inactive");
-        badge.getStyleClass().addAll("badge", product.isActive() ? "badge-active" : "badge-inactive");
-        return badge;
+    /** Status badge: green = in stock, amber = low stock, red = out of stock, grey = inactive (hidden from sale). */
+    private static Node statusBadge(Product product) {
+        Label badge = product.isActive()
+                ? label(product.getStockLevel().getLabel(), stockBadgeClass(product.getStockLevel()))
+                : label("Inactive", "badge-inactive");
+        badge.getStyleClass().add("badge");
+        badge.setMinWidth(Region.USE_PREF_SIZE);
+        return new HBox(badge);   // wrapped so the badge keeps its own width instead of filling the cell
     }
 
-    /** Colour-coded stock badge: green = in stock, amber = low, red = out of stock. */
-    private static Label stockBadge(Product product, boolean compact) {
-        Label badge = new Label(stockText(product, compact));
-        badge.getStyleClass().addAll("badge", stockBadgeClass(product.getStockLevel()));
-        return badge;
-    }
-
-    private static String stockText(Product product, boolean compact) {
-        String levelLabel = product.getStockLevel().getLabel();
-        if (compact) {
-            return product.getStockQuantity() + "  " + levelLabel;
+    private static String stockNumberClass(StockLevel level) {
+        switch (level) {
+            case OUT_OF_STOCK:
+                return "stock-out";
+            case LOW_STOCK:
+                return "stock-low";
+            default:
+                return "stock-ok";
         }
-        return product.getStockQuantity() + " units  |  " + levelLabel;
     }
+
+    private static String plural(int count, String one, String many) {
+        return count == 1 ? one : many;
+    }
+
 
     private static String stockBadgeClass(StockLevel level) {
         switch (level) {

@@ -12,7 +12,9 @@ public final class Formatters {
 
     private static final NumberFormat PRICE_FORMAT = NumberFormat.getCurrencyInstance(Locale.UK);
     private static final DateTimeFormatter DATE_TIME_FORMAT =
-            DateTimeFormatter.ofPattern("d MMM yyyy, HH:mm").withZone(ZoneId.systemDefault());
+            DateTimeFormatter.ofPattern("d MMM yyyy, HH:mm", Locale.UK).withZone(ZoneId.systemDefault());
+    private static final DateTimeFormatter DATE_FORMAT =
+            DateTimeFormatter.ofPattern("d MMM yyyy", Locale.UK).withZone(ZoneId.systemDefault());
 
     private Formatters() {
     }
@@ -24,5 +26,10 @@ public final class Formatters {
 
     public static String dateTime(Instant instant) {
         return DATE_TIME_FORMAT.format(instant);
+    }
+
+    /** "30 Oct 2026", as in the Figma design's details panel. */
+    public static String date(Instant instant) {
+        return DATE_FORMAT.format(instant);
     }
 }

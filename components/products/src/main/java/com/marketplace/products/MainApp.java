@@ -15,6 +15,7 @@ import java.io.IOException;
 public class MainApp extends Application {
 
     private AppContext context;
+    private MainController controller;
 
     /** Runs on the JavaFX launcher thread (not the UI thread), so reading the config file here is fine. */
     @Override
@@ -26,7 +27,7 @@ public class MainApp extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("ui/main-view.fxml"));
         Parent root = loader.load();
-        MainController controller = loader.getController();
+        controller = loader.getController();
         controller.setAppContext(context);
 
         stage.setTitle("Zyno Marketplace: Products");
@@ -40,6 +41,9 @@ public class MainApp extends Application {
 
     @Override
     public void stop() {
+        if (controller != null) {
+            controller.discardOpenForm();   // images copied by an add / edit form that was never saved
+        }
         AsyncRunner.shutdown();
         context.close();
     }
