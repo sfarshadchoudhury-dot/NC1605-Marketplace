@@ -1,0 +1,56 @@
+[
+  {
+    "_id": "WHS-001",
+    "name": "London Central",
+    "address": {
+      "line1": "Unit 4, Thames Gateway Park",
+      "line2": "",
+      "city": "London",
+      "postcode": "E16 2QU",
+      "country": "United Kingdom"
+    },
+    "active": true,
+    "createdAt": {
+      "$date": "2026-10-01T09:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-01T09:00:00Z"
+    }
+  },
+  {
+    "_id": "WHS-002",
+    "name": "Birmingham Hub",
+    "address": {
+      "line1": "12 Tyburn Road",
+      "line2": "",
+      "city": "Birmingham",
+      "postcode": "B24 8HJ",
+      "country": "United Kingdom"
+    },
+    "active": true,
+    "createdAt": {
+      "$date": "2026-10-01T09:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-01T09:00:00Z"
+    }
+  },
+  {
+    "_id": "WHS-003",
+    "name": "Manchester North",
+    "address": {
+      "line1": "7 Trafford Park Way",
+      "line2": "",
+      "city": "Manchester",
+      "postcode": "M17 1DB",
+      "country": "United Kingdom"
+    },
+    "active": true,
+    "createdAt": {
+      "$date": "2026-10-01T09:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-01T09:00:00Z"
+    }
+  }
+]

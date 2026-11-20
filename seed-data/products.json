@@ -1,0 +1,311 @@
+[
+  {
+    "_id": "PRD-00001",
+    "name": "Wireless Noise-Cancelling Headphones",
+    "description": "Over-ear Bluetooth headphones with 30-hour battery life and active noise cancelling.",
+    "price": {
+      "$numberDecimal": "129.99"
+    },
+    "stockQuantity": 24,
+    "active": true,
+    "categories": [
+      "Electronics",
+      "Audio"
+    ],
+    "imagePaths": [],
+    "createdAt": {
+      "$date": "2026-10-01T10:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-01T10:00:00Z"
+    }
+  },
+  {
+    "_id": "PRD-00002",
+    "name": "Bluetooth Portable Speaker",
+    "description": "Water-resistant pocket speaker with a deep bass driver and 12 hours of playtime.",
+    "price": {
+      "$numberDecimal": "49.50"
+    },
+    "stockQuantity": 3,
+    "active": true,
+    "categories": [
+      "Electronics",
+      "Audio"
+    ],
+    "imagePaths": [],
+    "createdAt": {
+      "$date": "2026-10-01T11:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-01T11:00:00Z"
+    }
+  },
+  {
+    "_id": "PRD-00003",
+    "name": "Mechanical Keyboard",
+    "description": "Tenkeyless keyboard with hot-swappable switches and white backlighting.",
+    "price": {
+      "$numberDecimal": "89.00"
+    },
+    "stockQuantity": 40,
+    "active": true,
+    "categories": [
+      "Electronics",
+      "Office"
+    ],
+    "imagePaths": [],
+    "createdAt": {
+      "$date": "2026-10-01T12:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-01T12:00:00Z"
+    }
+  },
+  {
+    "_id": "PRD-00004",
+    "name": "Ceramic Pour-Over Coffee Set",
+    "description": "Hand-glazed dripper and carafe for a clean, bright cup of filter coffee.",
+    "price": {
+      "$numberDecimal": "34.95"
+    },
+    "stockQuantity": 18,
+    "active": true,
+    "categories": [
+      "Home & Kitchen"
+    ],
+    "imagePaths": [],
+    "createdAt": {
+      "$date": "2026-10-01T13:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-01T13:00:00Z"
+    }
+  },
+  {
+    "_id": "PRD-00005",
+    "name": "Stainless Steel Water Bottle 750 ml",
+    "description": "Double-walled insulated bottle that keeps drinks cold for 24 hours.",
+    "price": {
+      "$numberDecimal": "19.99"
+    },
+    "stockQuantity": 0,
+    "active": true,
+    "categories": [
+      "Home & Kitchen",
+      "Sports & Outdoors"
+    ],
+    "imagePaths": [],
+    "createdAt": {
+      "$date": "2026-10-01T14:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-01T14:00:00Z"
+    }
+  },
+  {
+    "_id": "PRD-00006",
+    "name": "Cotton Crew-Neck T-Shirt",
+    "description": "Soft everyday t-shirt made from 100% organic cotton. Available in several colours.",
+    "price": {
+      "$numberDecimal": "14.00"
+    },
+    "stockQuantity": 120,
+    "active": true,
+    "categories": [
+      "Clothing"
+    ],
+    "imagePaths": [],
+    "createdAt": {
+      "$date": "2026-10-01T15:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-01T15:00:00Z"
+    }
+  },
+  {
+    "_id": "PRD-00007",
+    "name": "Waterproof Hiking Jacket",
+    "description": "Lightweight three-layer shell with taped seams and an adjustable hood.",
+    "price": {
+      "$numberDecimal": "119.00"
+    },
+    "stockQuantity": 8,
+    "active": true,
+    "categories": [
+      "Clothing",
+      "Sports & Outdoors"
+    ],
+    "imagePaths": [],
+    "createdAt": {
+      "$date": "2026-10-01T16:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-01T16:00:00Z"
+    }
+  },
+  {
+    "_id": "PRD-00008",
+    "name": "Beginner's Guide to Java Programming",
+    "description": "A friendly introduction to conditions, loops, arrays and objects, with exercises.",
+    "price": {
+      "$numberDecimal": "29.99"
+    },
+    "stockQuantity": 55,
+    "active": true,
+    "categories": [
+      "Books"
+    ],
+    "imagePaths": [],
+    "createdAt": {
+      "$date": "2026-10-01T17:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-01T17:00:00Z"
+    }
+  },
+  {
+    "_id": "PRD-00009",
+    "name": "Science Fiction Paperback Collection",
+    "description": "Boxed set of three classic science fiction novels. Discontinued edition.",
+    "price": {
+      "$numberDecimal": "21.75"
+    },
+    "stockQuantity": 0,
+    "active": false,
+    "categories": [
+      "Books"
+    ],
+    "imagePaths": [],
+    "createdAt": {
+      "$date": "2026-10-01T18:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-01T18:00:00Z"
+    }
+  },
+  {
+    "_id": "PRD-00010",
+    "name": "Wooden Building Blocks 100 Pieces",
+    "description": "Natural beech blocks in assorted shapes, packed in a cotton storage bag.",
+    "price": {
+      "$numberDecimal": "24.99"
+    },
+    "stockQuantity": 31,
+    "active": true,
+    "categories": [
+      "Toys & Games"
+    ],
+    "imagePaths": [],
+    "createdAt": {
+      "$date": "2026-10-01T19:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-01T19:00:00Z"
+    }
+  },
+  {
+    "_id": "PRD-00011",
+    "name": "Yoga Mat 6 mm",
+    "description": "Non-slip, extra-cushioned mat with a carry strap.",
+    "price": {
+      "$numberDecimal": "22.00"
+    },
+    "stockQuantity": 4,
+    "active": true,
+    "categories": [
+      "Sports & Outdoors",
+      "Fitness"
+    ],
+    "imagePaths": [],
+    "createdAt": {
+      "$date": "2026-10-01T20:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-01T20:00:00Z"
+    }
+  },
+  {
+    "_id": "PRD-00012",
+    "name": "Vitamin C Face Serum",
+    "description": "Brightening serum with 15% vitamin C and hyaluronic acid. 30 ml bottle.",
+    "price": {
+      "$numberDecimal": "17.49"
+    },
+    "stockQuantity": 62,
+    "active": true,
+    "categories": [
+      "Beauty"
+    ],
+    "imagePaths": [],
+    "createdAt": {
+      "$date": "2026-10-01T21:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-01T21:00:00Z"
+    }
+  },
+  {
+    "_id": "PRD-00013",
+    "name": "Ergonomic Desk Lamp",
+    "description": "LED lamp with adjustable colour temperature and a built-in USB charging port.",
+    "price": {
+      "$numberDecimal": "39.90"
+    },
+    "stockQuantity": 15,
+    "active": true,
+    "categories": [
+      "Home & Kitchen",
+      "Office"
+    ],
+    "imagePaths": [],
+    "createdAt": {
+      "$date": "2026-10-01T22:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-01T22:00:00Z"
+    }
+  },
+  {
+    "_id": "PRD-00014",
+    "name": "Standing Desk Converter",
+    "description": "Sit-stand workstation that rests on your desk. Waiting for the next delivery.",
+    "price": {
+      "$numberDecimal": "179.99"
+    },
+    "stockQuantity": 5,
+    "active": false,
+    "categories": [
+      "Office",
+      "Home & Kitchen"
+    ],
+    "imagePaths": [],
+    "createdAt": {
+      "$date": "2026-10-01T23:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-01T23:00:00Z"
+    }
+  },
+  {
+    "_id": "PRD-00015",
+    "name": "USB-C Charging Cable 2 m",
+    "description": "Braided fast-charging cable that supports up to 100 W power delivery.",
+    "price": {
+      "$numberDecimal": "9.99"
+    },
+    "stockQuantity": 250,
+    "active": true,
+    "categories": [
+      "Electronics",
+      "Accessories"
+    ],
+    "imagePaths": [],
+    "createdAt": {
+      "$date": "2026-10-02T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-02T00:00:00Z"
+    }
+  }
+]

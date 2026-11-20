@@ -48,7 +48,8 @@ When your design is ready, add your links to your row (set the Figma file to “
 |---|---|
 | [CONTRIBUTING.md](CONTRIBUTING.md) | **Team rules**: branches, commits, pull requests, what must never be committed |
 | [docs/TEAM-GUIDE.md](docs/TEAM-GUIDE.md) | Step-by-step guide: install the tools, clone, create your branch, add your project, push, open a pull request |
-| [docs/SHARED-CONVENTIONS.md](docs/SHARED-CONVENTIONS.md) | Shared names that link the components: `productId`, `customerId`, `orderId`, `warehouseId`, collections, ID formats, versions |
+| [docs/SHARED-CONVENTIONS.md](docs/SHARED-CONVENTIONS.md) | **FINAL** data structure: every collection, field, ID format and status value. Everyone follows it exactly |
+| [docs/SEED-DATA-GUIDE.md](docs/SEED-DATA-GUIDE.md) | Shared sample data: how to load it, check it and add your component's records |
 
 ---
 
@@ -60,7 +61,11 @@ NC1605-Marketplace/
 ├── CONTRIBUTING.md              team rules
 ├── docs/
 │   ├── TEAM-GUIDE.md
-│   └── SHARED-CONVENTIONS.md
+│   ├── SHARED-CONVENTIONS.md      FINAL data structure every component follows
+│   └── SEED-DATA-GUIDE.md         how to load, check and change the shared sample data
+├── seed-data/                   shared sample data, one JSON file per collection
+├── tools/
+│   └── seeder/                  checks seed-data/ and loads it into your local MongoDB
 └── components/
     ├── products/                Farshad (2408546)
     ├── customers/
@@ -93,3 +98,14 @@ Each component is its **own Maven project** inside `components/<name>/`, so each
 MongoDB then listens on `localhost:27017` with no password (local development only), which is the default every component uses.
 
 All components use database **`marketplace`** with one or more collections each. See [SHARED-CONVENTIONS.md](docs/SHARED-CONVENTIONS.md#3-mongodb).
+
+### Shared sample data
+
+So that everyone tests with the same records, load the shared seed data (first time, and whenever `seed-data/` changes; safe to repeat):
+
+```bash
+cd tools/seeder
+mvn -q compile exec:java
+```
+
+Details: [SEED-DATA-GUIDE.md](docs/SEED-DATA-GUIDE.md).

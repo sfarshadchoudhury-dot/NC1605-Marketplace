@@ -108,6 +108,15 @@ mongosh --quiet --eval "db.runCommand({ping:1})"
 
 It listens on `localhost:27017` with no password (local development only). Use database `marketplace`.
 
+**Load the shared sample data** (first time, and whenever `seed-data/` changes; safe to repeat):
+
+```bash
+cd tools/seeder
+mvn -q compile exec:java
+```
+
+Then every collection in `marketplace` holds the same sample records as on everyone else's machine (look in MongoDB Compass if you installed it). Details: [SEED-DATA-GUIDE.md](SEED-DATA-GUIDE.md).
+
 ## Step 8. Daily routine
 
 ```bash

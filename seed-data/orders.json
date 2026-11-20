@@ -1,0 +1,397 @@
+[
+  {
+    "_id": "ORD-00001",
+    "customerId": "CUS-00001",
+    "status": "DELIVERED",
+    "lines": [
+      {
+        "productId": "PRD-00001",
+        "productName": "Wireless Noise-Cancelling Headphones",
+        "unitPrice": {
+          "$numberDecimal": "129.99"
+        },
+        "quantity": 1,
+        "lineTotal": {
+          "$numberDecimal": "129.99"
+        }
+      },
+      {
+        "productId": "PRD-00015",
+        "productName": "USB-C Charging Cable 2 m",
+        "unitPrice": {
+          "$numberDecimal": "9.99"
+        },
+        "quantity": 2,
+        "lineTotal": {
+          "$numberDecimal": "19.98"
+        }
+      }
+    ],
+    "totalAmount": {
+      "$numberDecimal": "149.97"
+    },
+    "deliveryAddress": {
+      "line1": "27 Kingston Lane",
+      "line2": "",
+      "city": "Uxbridge",
+      "postcode": "UB8 3PH",
+      "country": "United Kingdom"
+    },
+    "orderedAt": {
+      "$date": "2026-10-04T20:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-07T20:00:00Z"
+    }
+  },
+  {
+    "_id": "ORD-00002",
+    "customerId": "CUS-00002",
+    "status": "DELIVERED",
+    "lines": [
+      {
+        "productId": "PRD-00003",
+        "productName": "Mechanical Keyboard",
+        "unitPrice": {
+          "$numberDecimal": "89.00"
+        },
+        "quantity": 1,
+        "lineTotal": {
+          "$numberDecimal": "89.00"
+        }
+      }
+    ],
+    "totalAmount": {
+      "$numberDecimal": "89.00"
+    },
+    "deliveryAddress": {
+      "line1": "14 Market Street",
+      "line2": "",
+      "city": "Manchester",
+      "postcode": "M1 1PW",
+      "country": "United Kingdom"
+    },
+    "orderedAt": {
+      "$date": "2026-10-05T21:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-08T21:00:00Z"
+    }
+  },
+  {
+    "_id": "ORD-00003",
+    "customerId": "CUS-00003",
+    "status": "DELIVERED",
+    "lines": [
+      {
+        "productId": "PRD-00006",
+        "productName": "Cotton Crew-Neck T-Shirt",
+        "unitPrice": {
+          "$numberDecimal": "14.00"
+        },
+        "quantity": 3,
+        "lineTotal": {
+          "$numberDecimal": "42.00"
+        }
+      },
+      {
+        "productId": "PRD-00004",
+        "productName": "Ceramic Pour-Over Coffee Set",
+        "unitPrice": {
+          "$numberDecimal": "34.95"
+        },
+        "quantity": 1,
+        "lineTotal": {
+          "$numberDecimal": "34.95"
+        }
+      }
+    ],
+    "totalAmount": {
+      "$numberDecimal": "76.95"
+    },
+    "deliveryAddress": {
+      "line1": "88 Soho Road",
+      "line2": "",
+      "city": "Birmingham",
+      "postcode": "B21 9DP",
+      "country": "United Kingdom"
+    },
+    "orderedAt": {
+      "$date": "2026-10-06T22:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-09T22:00:00Z"
+    }
+  },
+  {
+    "_id": "ORD-00004",
+    "customerId": "CUS-00004",
+    "status": "SHIPPED",
+    "lines": [
+      {
+        "productId": "PRD-00008",
+        "productName": "Beginner's Guide to Java Programming",
+        "unitPrice": {
+          "$numberDecimal": "29.99"
+        },
+        "quantity": 1,
+        "lineTotal": {
+          "$numberDecimal": "29.99"
+        }
+      }
+    ],
+    "totalAmount": {
+      "$numberDecimal": "29.99"
+    },
+    "deliveryAddress": {
+      "line1": "3 Clarence Terrace",
+      "line2": "",
+      "city": "Leeds",
+      "postcode": "LS1 4AB",
+      "country": "United Kingdom"
+    },
+    "orderedAt": {
+      "$date": "2026-10-11T23:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-12T23:00:00Z"
+    }
+  },
+  {
+    "_id": "ORD-00005",
+    "customerId": "CUS-00005",
+    "status": "SHIPPED",
+    "lines": [
+      {
+        "productId": "PRD-00012",
+        "productName": "Vitamin C Face Serum",
+        "unitPrice": {
+          "$numberDecimal": "17.49"
+        },
+        "quantity": 2,
+        "lineTotal": {
+          "$numberDecimal": "34.98"
+        }
+      },
+      {
+        "productId": "PRD-00010",
+        "productName": "Wooden Building Blocks 100 Pieces",
+        "unitPrice": {
+          "$numberDecimal": "24.99"
+        },
+        "quantity": 1,
+        "lineTotal": {
+          "$numberDecimal": "24.99"
+        }
+      }
+    ],
+    "totalAmount": {
+      "$numberDecimal": "59.97"
+    },
+    "deliveryAddress": {
+      "line1": "51 Queen Street",
+      "line2": "",
+      "city": "Cardiff",
+      "postcode": "CF10 2BU",
+      "country": "United Kingdom"
+    },
+    "orderedAt": {
+      "$date": "2026-10-13T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-14T00:00:00Z"
+    }
+  },
+  {
+    "_id": "ORD-00006",
+    "customerId": "CUS-00006",
+    "status": "PAID",
+    "lines": [
+      {
+        "productId": "PRD-00013",
+        "productName": "Ergonomic Desk Lamp",
+        "unitPrice": {
+          "$numberDecimal": "39.90"
+        },
+        "quantity": 1,
+        "lineTotal": {
+          "$numberDecimal": "39.90"
+        }
+      }
+    ],
+    "totalAmount": {
+      "$numberDecimal": "39.90"
+    },
+    "deliveryAddress": {
+      "line1": "9 Whitechapel Road",
+      "line2": "",
+      "city": "London",
+      "postcode": "E1 1DU",
+      "country": "United Kingdom"
+    },
+    "orderedAt": {
+      "$date": "2026-10-16T01:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-16T01:00:00Z"
+    }
+  },
+  {
+    "_id": "ORD-00007",
+    "customerId": "CUS-00001",
+    "status": "PAID",
+    "lines": [
+      {
+        "productId": "PRD-00011",
+        "productName": "Yoga Mat 6 mm",
+        "unitPrice": {
+          "$numberDecimal": "22.00"
+        },
+        "quantity": 1,
+        "lineTotal": {
+          "$numberDecimal": "22.00"
+        }
+      },
+      {
+        "productId": "PRD-00007",
+        "productName": "Waterproof Hiking Jacket",
+        "unitPrice": {
+          "$numberDecimal": "119.00"
+        },
+        "quantity": 1,
+        "lineTotal": {
+          "$numberDecimal": "119.00"
+        }
+      }
+    ],
+    "totalAmount": {
+      "$numberDecimal": "141.00"
+    },
+    "deliveryAddress": {
+      "line1": "27 Kingston Lane",
+      "line2": "",
+      "city": "Uxbridge",
+      "postcode": "UB8 3PH",
+      "country": "United Kingdom"
+    },
+    "orderedAt": {
+      "$date": "2026-10-17T02:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-17T02:00:00Z"
+    }
+  },
+  {
+    "_id": "ORD-00008",
+    "customerId": "CUS-00007",
+    "status": "PENDING",
+    "lines": [
+      {
+        "productId": "PRD-00002",
+        "productName": "Bluetooth Portable Speaker",
+        "unitPrice": {
+          "$numberDecimal": "49.50"
+        },
+        "quantity": 1,
+        "lineTotal": {
+          "$numberDecimal": "49.50"
+        }
+      }
+    ],
+    "totalAmount": {
+      "$numberDecimal": "49.50"
+    },
+    "deliveryAddress": {
+      "line1": "120 Princes Street",
+      "line2": "",
+      "city": "Edinburgh",
+      "postcode": "EH2 4AD",
+      "country": "United Kingdom"
+    },
+    "orderedAt": {
+      "$date": "2026-10-18T03:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-18T03:00:00Z"
+    }
+  },
+  {
+    "_id": "ORD-00009",
+    "customerId": "CUS-00002",
+    "status": "CANCELLED",
+    "lines": [
+      {
+        "productId": "PRD-00006",
+        "productName": "Cotton Crew-Neck T-Shirt",
+        "unitPrice": {
+          "$numberDecimal": "14.00"
+        },
+        "quantity": 1,
+        "lineTotal": {
+          "$numberDecimal": "14.00"
+        }
+      }
+    ],
+    "totalAmount": {
+      "$numberDecimal": "14.00"
+    },
+    "deliveryAddress": {
+      "line1": "14 Market Street",
+      "line2": "",
+      "city": "Manchester",
+      "postcode": "M1 1PW",
+      "country": "United Kingdom"
+    },
+    "orderedAt": {
+      "$date": "2026-10-10T04:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-11T04:00:00Z"
+    }
+  },
+  {
+    "_id": "ORD-00010",
+    "customerId": "CUS-00003",
+    "status": "DELIVERED",
+    "lines": [
+      {
+        "productId": "PRD-00001",
+        "productName": "Wireless Noise-Cancelling Headphones",
+        "unitPrice": {
+          "$numberDecimal": "129.99"
+        },
+        "quantity": 1,
+        "lineTotal": {
+          "$numberDecimal": "129.99"
+        }
+      },
+      {
+        "productId": "PRD-00008",
+        "productName": "Beginner's Guide to Java Programming",
+        "unitPrice": {
+          "$numberDecimal": "29.99"
+        },
+        "quantity": 2,
+        "lineTotal": {
+          "$numberDecimal": "59.98"
+        }
+      }
+    ],
+    "totalAmount": {
+      "$numberDecimal": "189.97"
+    },
+    "deliveryAddress": {
+      "line1": "88 Soho Road",
+      "line2": "",
+      "city": "Birmingham",
+      "postcode": "B21 9DP",
+      "country": "United Kingdom"
+    },
+    "orderedAt": {
+      "$date": "2026-10-08T05:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-11T05:00:00Z"
+    }
+  }
+]

@@ -1,0 +1,170 @@
+[
+  {
+    "_id": "CUS-00001",
+    "firstName": "Amelia",
+    "lastName": "Hughes",
+    "email": "amelia.hughes@example.com",
+    "phone": "07700 900101",
+    "address": {
+      "line1": "27 Kingston Lane",
+      "line2": "",
+      "city": "Uxbridge",
+      "postcode": "UB8 3PH",
+      "country": "United Kingdom"
+    },
+    "active": true,
+    "createdAt": {
+      "$date": "2026-10-02T10:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-02T10:00:00Z"
+    }
+  },
+  {
+    "_id": "CUS-00002",
+    "firstName": "Oliver",
+    "lastName": "Bennett",
+    "email": "oliver.bennett@example.com",
+    "phone": "07700 900102",
+    "address": {
+      "line1": "14 Market Street",
+      "line2": "",
+      "city": "Manchester",
+      "postcode": "M1 1PW",
+      "country": "United Kingdom"
+    },
+    "active": true,
+    "createdAt": {
+      "$date": "2026-10-02T11:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-02T11:00:00Z"
+    }
+  },
+  {
+    "_id": "CUS-00003",
+    "firstName": "Priya",
+    "lastName": "Sharma",
+    "email": "priya.sharma@example.com",
+    "phone": "07700 900103",
+    "address": {
+      "line1": "88 Soho Road",
+      "line2": "",
+      "city": "Birmingham",
+      "postcode": "B21 9DP",
+      "country": "United Kingdom"
+    },
+    "active": true,
+    "createdAt": {
+      "$date": "2026-10-02T12:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-02T12:00:00Z"
+    }
+  },
+  {
+    "_id": "CUS-00004",
+    "firstName": "Daniel",
+    "lastName": "Okafor",
+    "email": "daniel.okafor@example.com",
+    "phone": "07700 900104",
+    "address": {
+      "line1": "3 Clarence Terrace",
+      "line2": "",
+      "city": "Leeds",
+      "postcode": "LS1 4AB",
+      "country": "United Kingdom"
+    },
+    "active": true,
+    "createdAt": {
+      "$date": "2026-10-02T13:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-02T13:00:00Z"
+    }
+  },
+  {
+    "_id": "CUS-00005",
+    "firstName": "Sophie",
+    "lastName": "Clarke",
+    "email": "sophie.clarke@example.com",
+    "phone": "07700 900105",
+    "address": {
+      "line1": "51 Queen Street",
+      "line2": "",
+      "city": "Cardiff",
+      "postcode": "CF10 2BU",
+      "country": "United Kingdom"
+    },
+    "active": true,
+    "createdAt": {
+      "$date": "2026-10-02T14:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-02T14:00:00Z"
+    }
+  },
+  {
+    "_id": "CUS-00006",
+    "firstName": "Mohammed",
+    "lastName": "Rahman",
+    "email": "mohammed.rahman@example.com",
+    "phone": "07700 900106",
+    "address": {
+      "line1": "9 Whitechapel Road",
+      "line2": "",
+      "city": "London",
+      "postcode": "E1 1DU",
+      "country": "United Kingdom"
+    },
+    "active": true,
+    "createdAt": {
+      "$date": "2026-10-02T15:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-02T15:00:00Z"
+    }
+  },
+  {
+    "_id": "CUS-00007",
+    "firstName": "Emily",
+    "lastName": "Walsh",
+    "email": "emily.walsh@example.com",
+    "phone": "07700 900107",
+    "address": {
+      "line1": "120 Princes Street",
+      "line2": "",
+      "city": "Edinburgh",
+      "postcode": "EH2 4AD",
+      "country": "United Kingdom"
+    },
+    "active": true,
+    "createdAt": {
+      "$date": "2026-10-02T16:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-02T16:00:00Z"
+    }
+  },
+  {
+    "_id": "CUS-00008",
+    "firstName": "Jack",
+    "lastName": "Turner",
+    "email": "jack.turner@example.com",
+    "phone": "07700 900108",
+    "address": {
+      "line1": "6 Broad Street",
+      "line2": "",
+      "city": "Bristol",
+      "postcode": "BS1 2EQ",
+      "country": "United Kingdom"
+    },
+    "active": false,
+    "createdAt": {
+      "$date": "2026-10-02T17:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-02T17:00:00Z"
+    }
+  }
+]

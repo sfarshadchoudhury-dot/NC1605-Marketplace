@@ -22,8 +22,9 @@ If you disagree with a rule, raise it in the group chat. Do not just ignore it.
 
 1. Your code goes **only** in `components/<your-component>/`.
 2. Do **not** edit another component's folder. If you need a change there, ask the owner in the group chat or open an issue.
-3. Shared files (`README.md`, `CONTRIBUTING.md`, `docs/`, `.gitignore`) are changed **only by pull request**, and the PR description must say what changed and why.
+3. Shared files (`README.md`, `CONTRIBUTING.md`, `docs/`, `tools/`, `.gitignore`) are changed **only by pull request**, and the PR description must say what changed and why.
    The one exception: you may edit **your own row** of the team table in `README.md`.
+4. In `seed-data/`, edit **only your own collection's file** (for example Orders edits `orders.json`). Run the seeder's `--check` before opening the pull request. See [docs/SEED-DATA-GUIDE.md](docs/SEED-DATA-GUIDE.md).
 
 ## 3. Shared names and IDs
 

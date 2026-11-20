@@ -1,0 +1,150 @@
+[
+  {
+    "_id": "SHP-00001",
+    "orderId": "ORD-00001",
+    "warehouseId": "WHS-001",
+    "status": "DELIVERED",
+    "courier": "Royal Mail",
+    "trackingNumber": "RM48210137GB",
+    "dispatchedAt": {
+      "$date": "2026-10-05T20:00:00Z"
+    },
+    "deliveredAt": {
+      "$date": "2026-10-07T20:00:00Z"
+    },
+    "createdAt": {
+      "$date": "2026-10-04T22:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-07T20:00:00Z"
+    }
+  },
+  {
+    "_id": "SHP-00002",
+    "orderId": "ORD-00002",
+    "warehouseId": "WHS-001",
+    "status": "DELIVERED",
+    "courier": "DPD",
+    "trackingNumber": "DPD48210274GB",
+    "dispatchedAt": {
+      "$date": "2026-10-06T21:00:00Z"
+    },
+    "deliveredAt": {
+      "$date": "2026-10-08T21:00:00Z"
+    },
+    "createdAt": {
+      "$date": "2026-10-05T23:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-08T21:00:00Z"
+    }
+  },
+  {
+    "_id": "SHP-00003",
+    "orderId": "ORD-00003",
+    "warehouseId": "WHS-001",
+    "status": "DELIVERED",
+    "courier": "Royal Mail",
+    "trackingNumber": "RM48210411GB",
+    "dispatchedAt": {
+      "$date": "2026-10-07T22:00:00Z"
+    },
+    "deliveredAt": {
+      "$date": "2026-10-09T22:00:00Z"
+    },
+    "createdAt": {
+      "$date": "2026-10-07T00:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-09T22:00:00Z"
+    }
+  },
+  {
+    "_id": "SHP-00004",
+    "orderId": "ORD-00004",
+    "warehouseId": "WHS-002",
+    "status": "IN_TRANSIT",
+    "courier": "DPD",
+    "trackingNumber": "DPD48210548GB",
+    "dispatchedAt": {
+      "$date": "2026-10-12T23:00:00Z"
+    },
+    "deliveredAt": null,
+    "createdAt": {
+      "$date": "2026-10-12T01:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-12T23:00:00Z"
+    }
+  },
+  {
+    "_id": "SHP-00005",
+    "orderId": "ORD-00005",
+    "warehouseId": "WHS-001",
+    "status": "IN_TRANSIT",
+    "courier": "Royal Mail",
+    "trackingNumber": "RM48210685GB",
+    "dispatchedAt": {
+      "$date": "2026-10-14T00:00:00Z"
+    },
+    "deliveredAt": null,
+    "createdAt": {
+      "$date": "2026-10-13T02:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-14T00:00:00Z"
+    }
+  },
+  {
+    "_id": "SHP-00006",
+    "orderId": "ORD-00006",
+    "warehouseId": "WHS-001",
+    "status": "PREPARING",
+    "courier": null,
+    "trackingNumber": null,
+    "dispatchedAt": null,
+    "deliveredAt": null,
+    "createdAt": {
+      "$date": "2026-10-16T03:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-16T01:00:00Z"
+    }
+  },
+  {
+    "_id": "SHP-00007",
+    "orderId": "ORD-00007",
+    "warehouseId": "WHS-001",
+    "status": "PREPARING",
+    "courier": null,
+    "trackingNumber": null,
+    "dispatchedAt": null,
+    "deliveredAt": null,
+    "createdAt": {
+      "$date": "2026-10-17T04:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-17T02:00:00Z"
+    }
+  },
+  {
+    "_id": "SHP-00008",
+    "orderId": "ORD-00010",
+    "warehouseId": "WHS-001",
+    "status": "DELIVERED",
+    "courier": "DPD",
+    "trackingNumber": "DPD48211096GB",
+    "dispatchedAt": {
+      "$date": "2026-10-09T05:00:00Z"
+    },
+    "deliveredAt": {
+      "$date": "2026-10-11T05:00:00Z"
+    },
+    "createdAt": {
+      "$date": "2026-10-08T07:00:00Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-11T05:00:00Z"
+    }
+  }
+]

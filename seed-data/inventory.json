@@ -1,0 +1,332 @@
+[
+  {
+    "_id": "STK-00001",
+    "productId": "PRD-00001",
+    "warehouseId": "WHS-001",
+    "quantity": 12,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00002",
+    "productId": "PRD-00001",
+    "warehouseId": "WHS-002",
+    "quantity": 8,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00003",
+    "productId": "PRD-00001",
+    "warehouseId": "WHS-003",
+    "quantity": 4,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00004",
+    "productId": "PRD-00002",
+    "warehouseId": "WHS-001",
+    "quantity": 3,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00005",
+    "productId": "PRD-00003",
+    "warehouseId": "WHS-001",
+    "quantity": 20,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00006",
+    "productId": "PRD-00003",
+    "warehouseId": "WHS-002",
+    "quantity": 13,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00007",
+    "productId": "PRD-00003",
+    "warehouseId": "WHS-003",
+    "quantity": 7,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00008",
+    "productId": "PRD-00004",
+    "warehouseId": "WHS-001",
+    "quantity": 9,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00009",
+    "productId": "PRD-00004",
+    "warehouseId": "WHS-002",
+    "quantity": 6,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00010",
+    "productId": "PRD-00004",
+    "warehouseId": "WHS-003",
+    "quantity": 3,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00011",
+    "productId": "PRD-00005",
+    "warehouseId": "WHS-001",
+    "quantity": 0,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00012",
+    "productId": "PRD-00006",
+    "warehouseId": "WHS-001",
+    "quantity": 60,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00013",
+    "productId": "PRD-00006",
+    "warehouseId": "WHS-002",
+    "quantity": 40,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00014",
+    "productId": "PRD-00006",
+    "warehouseId": "WHS-003",
+    "quantity": 20,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00015",
+    "productId": "PRD-00007",
+    "warehouseId": "WHS-001",
+    "quantity": 8,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00016",
+    "productId": "PRD-00008",
+    "warehouseId": "WHS-001",
+    "quantity": 27,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00017",
+    "productId": "PRD-00008",
+    "warehouseId": "WHS-002",
+    "quantity": 18,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00018",
+    "productId": "PRD-00008",
+    "warehouseId": "WHS-003",
+    "quantity": 10,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00019",
+    "productId": "PRD-00009",
+    "warehouseId": "WHS-001",
+    "quantity": 0,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00020",
+    "productId": "PRD-00010",
+    "warehouseId": "WHS-001",
+    "quantity": 15,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00021",
+    "productId": "PRD-00010",
+    "warehouseId": "WHS-002",
+    "quantity": 10,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00022",
+    "productId": "PRD-00010",
+    "warehouseId": "WHS-003",
+    "quantity": 6,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00023",
+    "productId": "PRD-00011",
+    "warehouseId": "WHS-001",
+    "quantity": 4,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00024",
+    "productId": "PRD-00012",
+    "warehouseId": "WHS-001",
+    "quantity": 31,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00025",
+    "productId": "PRD-00012",
+    "warehouseId": "WHS-002",
+    "quantity": 20,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00026",
+    "productId": "PRD-00012",
+    "warehouseId": "WHS-003",
+    "quantity": 11,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00027",
+    "productId": "PRD-00013",
+    "warehouseId": "WHS-001",
+    "quantity": 7,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00028",
+    "productId": "PRD-00013",
+    "warehouseId": "WHS-002",
+    "quantity": 5,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00029",
+    "productId": "PRD-00013",
+    "warehouseId": "WHS-003",
+    "quantity": 3,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00030",
+    "productId": "PRD-00014",
+    "warehouseId": "WHS-001",
+    "quantity": 5,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00031",
+    "productId": "PRD-00015",
+    "warehouseId": "WHS-001",
+    "quantity": 125,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00032",
+    "productId": "PRD-00015",
+    "warehouseId": "WHS-002",
+    "quantity": 83,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  },
+  {
+    "_id": "STK-00033",
+    "productId": "PRD-00015",
+    "warehouseId": "WHS-003",
+    "quantity": 42,
+    "minLevel": 5,
+    "updatedAt": {
+      "$date": "2026-10-02T09:00:00Z"
+    }
+  }
+]
