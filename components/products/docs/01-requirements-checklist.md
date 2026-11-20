@@ -69,7 +69,7 @@ How to read the columns
 | ID | Requirement | Where | Implemented | Automated test | Manual test | Status |
 |---|---|---|---|---|---|---|
 | R35 | Connection settings from environment variables or a local config file; example without credentials | `AppConfig`, `config/application.properties.example` | Yes | `AppConfigTest` (priority order, blank values, masking, the example file contains no credentials) | M-39 | |
-| R36 | Clear MongoDB setup instructions and optional Docker Compose file | `README.md` section 3, `docker-compose.yml` (repository root, shared by all components) | Yes | n/a (manual test) | M-01 | |
+| R36 | Clear MongoDB setup instructions (MongoDB Community Server, installed locally) | `README.md` section 3 and the repository README (shared by all components) | Yes | n/a (manual test) | M-01 | |
 | R37 | If MongoDB is unavailable: actionable error, never a silent in-memory fallback | `AppContext.connect`, `MongoProductRepository.translate`, `MainController.handleFailure` | Yes | `AppContextTest` | M-37, M-38 | |
 | R38 | Explicit seed command, about 15 varied products, no overwrite, no duplicates on re-run | `SeedMain`, `SampleDataSeeder` (`mvn compile exec:java@seed`) | Yes | `SampleDataSeederTest` (6 tests); `MongoProductRepositoryIT.seedingTwiceCreatesNoDuplicatesInMongo` | M-02, M-03 | |
 

@@ -7,7 +7,7 @@ Requirement IDs (R1, R2, ...) refer to [01-requirements-checklist.md](01-require
 
 ## Preparation
 
-1. Start MongoDB: `docker compose up -d`.
+1. Start MongoDB Community Server (Windows: `net start MongoDB`, or it is already running as a service; macOS: `brew services start mongodb-community`). Check with `mongosh --quiet --eval "db.runCommand({ping:1})"`.
 2. Prepare these files somewhere easy to find (for the image tests):
    * `lamp1.png`, `lamp2.jpg`, `lamp3.gif`: any three real pictures under 5 MB (screenshots are fine).
    * `notes.txt`: any text file.
@@ -50,7 +50,7 @@ Requirement IDs (R1, R2, ...) refer to [01-requirements-checklist.md](01-require
 | M-18 | R9 | Add images until there are 6, then try one more (or choose 8 files at once on a fresh form). | The Add button disables at 6; extra files are reported ("limit of 6 images was reached") and ignored. | | | |
 | M-19 | R12, R26 | Edit "Test Mug", click the **X** on one thumbnail, **Save**. | The picture disappears from the details panel. The file for it is gone from `data/images/`; the other one remains. | | | |
 | M-20 | R26 | **+ Add product**, add one image, then press **Cancel**. Look in `data/images/`. | The just-copied file is not left behind (the folder has no new file). | | | |
-| M-21 | R22, R26, R27 | In a terminal: `docker exec marketplace-mongodb mongosh --quiet marketplace --eval "printjson(db.products.findOne({name:'Test Mug'}))"` | `price` is `Decimal128('4.50')`; `_id` is `PRD-000nn`; `stockQuantity` is a number; `imagePaths` are like `images/3f2a....png` with **no** drive letter, no `/Users/...`. | | | |
+| M-21 | R22, R26, R27 | In a terminal: `mongosh --quiet marketplace --eval "printjson(db.products.findOne({name:'Test Mug'}))"` | `price` is `Decimal128('4.50')`; `_id` is `PRD-000nn`; `stockQuantity` is a number; `imagePaths` are like `images/3f2a....png` with **no** drive letter, no `/Users/...`. | | | |
 | M-22 | R29 | Close the app. In `data/images/` delete one image that a product uses. Start the app and select that product. | No crash. The missing picture shows "Image unavailable" (in the table thumbnail and details); other pictures are fine. | | | |
 
 ## D. Editing, deactivating and deleting
@@ -81,8 +81,8 @@ Requirement IDs (R1, R2, ...) refer to [01-requirements-checklist.md](01-require
 | ID | Req. | Steps | Expected outcome | Actual result | Pass/Fail | Evidence |
 |---|---|---|---|---|---|---|
 | M-36 | R17 | Add a product, close the app completely, start it again. | The product (with its price, stock, categories and pictures) is still there. | | | |
-| M-37 | R32, R37 | With the app open: `docker compose stop`. Click **Refresh**. Then `docker compose start`, click **Retry connection**. | After a few seconds a red "Database problem" panel appears with "Cannot reach MongoDB..." and the pill next to the title says "Not connected". After Retry the list returns. | | | |
-| M-38 | R37 | `docker compose stop`, start the app. | Same red panel within about 3 seconds, with the instruction `docker compose up -d`. No in-memory fallback data is shown. Add/Edit report "Not connected to MongoDB". | | | |
+| M-37 | R32, R37 | With the app open, stop MongoDB (Windows: `net stop MongoDB`; macOS: `brew services stop mongodb-community`). Click **Refresh**. Then start it again (`net start MongoDB` / `brew services start mongodb-community`) and click **Retry connection**. | After a few seconds a red "Database problem" panel appears with "Cannot reach MongoDB..." and the pill next to the title says "Not connected". After Retry the list returns. | | | |
+| M-38 | R37 | Stop MongoDB (`net stop MongoDB` / `brew services stop mongodb-community`), start the app. | Same red panel within about 3 seconds, with the start commands for Windows and macOS. No in-memory fallback data is shown. Add/Edit report "Not connected to MongoDB". | | | |
 | M-39 | R35 | Stop the app. Start it with `MONGODB_DATABASE=marketplace_demo` (see the README for the shell syntax), or create `config/application.properties` with `mongodb.database=marketplace_demo`. | The pill next to the title shows `Connected · marketplace_demo` and the catalogue is empty (a different database). The environment variable wins over the file if both are set. | | | |
 | M-40 | R34 | Start the app with MongoDB stopped. During the ~3 seconds before the error appears, try dragging the window and clicking Refresh. | The window keeps responding (it does not freeze or turn "Not Responding"). | | | |
 
@@ -90,7 +90,7 @@ Requirement IDs (R1, R2, ...) refer to [01-requirements-checklist.md](01-require
 
 | ID | Req. | Steps | Expected outcome | Actual result | Pass/Fail | Evidence |
 |---|---|---|---|---|---|---|
-| M-41 | R42 | **On Windows:** install JDK 17+, Maven (or Eclipse), MongoDB or Docker Desktop. Follow the README quick start; run `mvn test`, the seed command and the app. | Everything in the README works unchanged. Record any step that needed a change. | | | |
+| M-41 | R42 | **On Windows:** install JDK 17+, Maven (or Eclipse), MongoDB Community Server. Follow the README quick start; run `mvn test`, the seed command and the app. | Everything in the README works unchanged. Record any step that needed a change. | | | |
 | M-42 | R42 | **Eclipse (macOS or Windows):** follow README section 8: import as Maven project, run `Launcher`, run `SeedMain`, run `src/test/java` as JUnit. | App starts from Eclipse; seed works; tests pass. | | | |
 
 ---
@@ -110,7 +110,7 @@ The *Tests* column is the number of test methods in each class.
 | A-05 | Products | `ProductMapperTest` | **Decimal128** price, `_id` is the product ID, round trip keeps every field, exact money arithmetic, defaults for missing fields | 7 | R17, R22 | |
 | A-06 | Products | `AppConfigTest` | Environment overrides file overrides defaults; blank values ignored; password hidden when URI shown; example config has no credentials | 6 | R35 | |
 | A-07 | Products | `SampleDataSeederTest` | 15 samples, **re-run adds nothing**, existing records never overwritten, a deleted sample is restored, sample data varied, every image file exists | 6 | R30, R38 | |
-| A-08 | Products | `AppContextTest` | Unreachable MongoDB gives "Cannot reach MongoDB ... docker compose up -d"; malformed URI gives a clear error | 2 | R37 | |
+| A-08 | Products | `AppContextTest` | Unreachable MongoDB gives "Cannot reach MongoDB ... MongoDB Community Server ..."; malformed URI gives a clear error | 2 | R37 | |
 | A-09 | Products | `FxmlLoadTest` | `main-view.fxml` and `product-form.fxml` load and every `@FXML` field is wired. **Skipped if no graphical session.** | 3 | R31 | |
 | I-01 | Products | `MongoProductRepositoryIT` (needs MongoDB) | Stored format (`Decimal128`, string `_id`), indexes, **data survives restart**, sequential IDs, 40 concurrent ID requests all distinct, edit keeps document ID, unknown-ID update/delete, search on real data, **seed twice creates no duplicates** | 11 | R2, R3, R17, R22, R23, R38 | |
 

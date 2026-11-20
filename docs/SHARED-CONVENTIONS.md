@@ -45,7 +45,7 @@ Rules:
 
 * Database name: **`marketplace`**
 * Connection: `mongodb://localhost:27017` by default. Override with the environment variable **`MONGODB_URI`**, and the database with **`MONGODB_DATABASE`**. Never hard-code a password.
-* Start it with `docker compose up -d` from the repo root.
+* Server: **MongoDB Community Server** (8.0 or newer) installed locally on each machine. **AGREED (final)**: no Docker, no Atlas. Start it with Windows: `net start MongoDB` (or it starts by itself as a service); macOS: `brew services start mongodb-community`.
 
 | Collection | Owner | Holds | Status |
 |---|---|---|---|
@@ -113,3 +113,4 @@ Before creating a record that points to a product, check that the product exists
 | Date | Change | Agreed by |
 |---|---|---|
 | 2026-11-14 | First version: ID formats, collections, field rules, open questions | Farshad (proposal) |
+| 2026-11-20 | Final decision: everyone uses MongoDB Community Server installed locally (no Docker, no Atlas); `docker-compose.yml` removed | Group |

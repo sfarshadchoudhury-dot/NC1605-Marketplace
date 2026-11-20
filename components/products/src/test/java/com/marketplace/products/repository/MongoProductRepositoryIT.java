@@ -78,7 +78,7 @@ class MongoProductRepositoryIT {
         } catch (RuntimeException e) {
             available = false;
         }
-        assumeTrue(available, "MongoDB is not reachable at " + URI + " - start it with: docker compose up -d");
+        assumeTrue(available, "MongoDB is not reachable at " + URI + " - start MongoDB Community Server (Windows: net start MongoDB; macOS: brew services start mongodb-community)");
     }
 
     @AfterAll
