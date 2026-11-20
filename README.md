@@ -40,7 +40,6 @@ When you claim a component, update your own row in this table (see the [Team Gui
 NC1605-Marketplace/
 ├── README.md                    this file
 ├── CONTRIBUTING.md              team rules
-├── docker-compose.yml           one shared local MongoDB for everyone
 ├── docs/
 │   ├── TEAM-GUIDE.md
 │   └── SHARED-CONVENTIONS.md
@@ -60,11 +59,19 @@ Each component is its **own Maven project** inside `components/<name>/`, so each
 
 ## Shared MongoDB
 
-From the repository root:
+**Decision (final): every team member uses MongoDB Community Server, installed locally.** No Docker and no Atlas.
 
-```bash
-docker compose up -d      # start MongoDB on localhost:27017
-docker compose down       # stop (data is kept)
-```
+1. Install **MongoDB Community Server 8.0 or newer** from https://www.mongodb.com/try/download/community
+   * **Windows:** run the MSI installer, choose *Complete*, keep **"Install MongoD as a Service"** ticked. It then starts by itself with Windows.
+   * **macOS:** `brew tap mongodb/brew && brew install mongodb-community` then `brew services start mongodb-community`
+2. Install **MongoDB Shell (`mongosh`)** from https://www.mongodb.com/try/download/shell (and optionally MongoDB Compass to look at the data).
+3. Check it is running: `mongosh --quiet --eval "db.runCommand({ping:1})"` must print `{ ok: 1 }`.
+
+| | Windows (Command Prompt as administrator) | macOS |
+|---|---|---|
+| Start | `net start MongoDB` | `brew services start mongodb-community` |
+| Stop | `net stop MongoDB` | `brew services stop mongodb-community` |
+
+MongoDB then listens on `localhost:27017` with no password (local development only), which is the default every component uses.
 
 All components use database **`marketplace`** with one or more collections each. See [SHARED-CONVENTIONS.md](docs/SHARED-CONVENTIONS.md#3-mongodb).

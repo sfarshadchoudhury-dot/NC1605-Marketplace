@@ -26,7 +26,7 @@ class AppContextTest {
             DatabaseException error = assertThrows(DatabaseException.class, context::connect);
 
             assertTrue(error.getMessage().contains("Cannot reach MongoDB"), error.getMessage());
-            assertTrue(error.getMessage().contains("docker compose up -d"), "message tells the user what to do");
+            assertTrue(error.getMessage().contains("MongoDB Community Server"), "message tells the user what to do");
             assertFalse(context.isConnected());
             assertThrows(IllegalStateException.class, context::getProductService);
         }

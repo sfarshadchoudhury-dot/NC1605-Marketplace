@@ -177,8 +177,8 @@
                                         <Label text="Database problem" styleClass="state-title"/>
                                         <Label fx:id="errorMessage" styleClass="state-text" wrapText="true"
                                                maxWidth="460"/>
-                                        <Label text="docker compose up -d" styleClass="command-label"/>
-                                        <Label text="Start MongoDB with the command above, then retry."
+                                        <Label text="Windows: net start MongoDB    macOS: brew services start mongodb-community" styleClass="command-label"/>
+                                        <Label text="Start MongoDB Community Server with the command above, then retry."
                                                styleClass="state-text"/>
                                         <Button fx:id="retryButton" text="Retry connection" onAction="#onRetry"
                                                 styleClass="primary-button"/>

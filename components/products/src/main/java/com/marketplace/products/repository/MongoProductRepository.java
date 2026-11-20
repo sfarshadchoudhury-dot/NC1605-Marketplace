@@ -132,8 +132,9 @@ public class MongoProductRepository implements ProductRepository {
     /** Turns a raw driver exception into a message that tells the user what to do. */
     public static DatabaseException translate(MongoException e) {
         if (e instanceof MongoTimeoutException || e instanceof MongoSocketException) {
-            return new DatabaseException("Cannot reach MongoDB. Make sure it is running "
-                    + "(for example: docker compose up -d) and that MONGODB_URI is correct, then try again.", e);
+            return new DatabaseException("Cannot reach MongoDB. Make sure MongoDB Community Server is running "
+                    + "(Windows: net start MongoDB; macOS: brew services start mongodb-community) "
+                    + "and that MONGODB_URI is correct, then try again.", e);
         }
         if (e instanceof MongoSecurityException) {
             return new DatabaseException("MongoDB rejected the username or password in MONGODB_URI. "

@@ -37,20 +37,20 @@ The JavaFX screens follow this design:
 |---|---|---|
 | **JDK** | **17 or newer** | The code is written for Java 17 and also runs on newer JDKs. Use a full JDK, not just a JRE. |
 | **Maven** | 3.9 or newer | Or use Eclipse's built-in Maven (m2e). Check with `mvn -v`. |
-| **MongoDB** | 6.0 or newer | Easiest with Docker (below). Tested against MongoDB 7.0. |
-| Docker Desktop | optional | Only needed for the one-line MongoDB start-up. |
+| **MongoDB Community Server** | 8.0 or newer | Installed locally (section 3). The group decision is final: no Docker, no Atlas. |
+| MongoDB Shell (`mongosh`) | any | Only to check the server and look at the data. |
 
 The first build downloads JavaFX, the MongoDB driver and JUnit from Maven Central, so it needs an internet connection once.
 Maven chooses the correct JavaFX files for Windows, macOS or Linux automatically.
 
 ---
 
-## 2. Quick start (5 commands)
+## 2. Quick start
 
-Run `docker compose` from the **repository root** (the shared MongoDB for all components); run the `mvn` commands in this folder (`components/products`, the folder containing `pom.xml`).
+Make sure MongoDB Community Server is running (section 3), then run the `mvn` commands in this folder (`components/products`, the folder containing `pom.xml`).
 
 ```bash
-docker compose up -d                 # 1. start MongoDB (skip if you already run MongoDB)
+# 1. MongoDB Community Server must be running (Windows: it starts as a service; macOS: brew services start mongodb-community)
 mvn test                             # 2. optional: run the unit tests (no database needed)
 mvn compile exec:java@seed           # 3. optional: load ~15 sample products (safe to repeat)
 mvn javafx:run                       # 4. start the application
@@ -62,49 +62,28 @@ That is all: with the defaults the app connects to `mongodb://localhost:27017`, 
 
 ## 3. MongoDB setup
 
-Pick **one** option.
+We use **MongoDB Community Server** installed on each computer (group decision, final: no Docker, no Atlas).
 
-### Option A: Docker Compose (recommended)
+**Install (once)**
 
-```bash
-# run these from the repository root (the shared docker-compose.yml lives there)
-docker compose up -d        # start (data survives restarts in the "mongo_data" volume)
-docker compose ps           # check it says "running"
-docker compose down         # stop (data kept)
-docker compose down -v      # stop AND delete all data
-```
+* **Windows:** download the MSI installer from https://www.mongodb.com/try/download/community (version 8.0 or newer), choose *Complete* and keep **"Install MongoD as a Service"** ticked. MongoDB then starts by itself whenever Windows starts.
+* **macOS (Homebrew):** `brew tap mongodb/brew && brew install mongodb-community`
+* Also install **MongoDB Shell** (`mongosh`) from https://www.mongodb.com/try/download/shell to run the check below.
 
-The container listens on `127.0.0.1:27017` only and has **no password**, so use it for local development only.
+**Start and stop**
 
-### Option B: Install MongoDB Community Server
+| | Windows (Command Prompt as administrator) | macOS |
+|---|---|---|
+| Start | `net start MongoDB` | `brew services start mongodb-community` |
+| Stop | `net stop MongoDB` | `brew services stop mongodb-community` |
 
-* **macOS (Homebrew):** `brew tap mongodb/brew && brew install mongodb-community && brew services start mongodb-community`
-* **Windows:** download the MSI installer from mongodb.com/try/download/community, tick "Install MongoDB as a Service", finish the wizard.
-
-Either way MongoDB then listens on `localhost:27017` and the default settings work.
-
-### Option C: MongoDB Atlas or a server with a password
-
-Do **not** put the password in any project file. Set it as an environment variable instead:
-
-```bash
-# macOS / Linux
-export MONGODB_URI="mongodb+srv://USER:PASSWORD@cluster0.example.mongodb.net/"
-
-# Windows PowerShell
-$env:MONGODB_URI = "mongodb+srv://USER:PASSWORD@cluster0.example.mongodb.net/"
-
-# Windows cmd
-set MONGODB_URI=mongodb+srv://USER:PASSWORD@cluster0.example.mongodb.net/
-```
-
-(The default setup is the local container with no password.)
+MongoDB then listens on `localhost:27017` with no password, which is exactly what the default settings use, so no configuration is needed.
+If your server is set up with a login, do **not** put the password in any project file: set the full connection string in the `MONGODB_URI` environment variable instead (for example `set MONGODB_URI=mongodb://USER:PASSWORD@localhost:27017/` in Windows cmd).
 
 ### Check that MongoDB is reachable
 
 ```bash
-docker exec marketplace-mongodb mongosh --quiet --eval "db.runCommand({ping:1})"     # Docker option
-mongosh --quiet --eval "db.runCommand({ping:1})"                                       # local install
+mongosh --quiet --eval "db.runCommand({ping:1})"
 ```
 
 You should see `{ ok: 1 }`. If MongoDB is not running the application does **not** fall back to a fake database:
@@ -204,11 +183,11 @@ In Eclipse: right-click a test class or the `src/test/java` folder > **Run As > 
 ### Export for submission (as the brief describes)
 
 1. **File > Export > General > File System > Next**, select the project folder.
-2. Make sure `src`, `pom.xml`, `docs`, `config`, a copy of the repository's root `docker-compose.yml`, and the Eclipse files (`.project`, `.classpath`, `.settings`) are ticked. `bin`/`target` may be included or left out, since Maven rebuilds them.
+2. Make sure `src`, `pom.xml`, `docs`, `config` and the Eclipse files (`.project`, `.classpath`, `.settings`) are ticked. `bin`/`target` may be included or left out, since Maven rebuilds them.
 3. Compress the exported folder into `<StudentID>_NC1605_Implementation_Code.zip`.
 
 Notes for the examiner: MongoDB must be running on the examiner's machine
-(`docker compose up -d`, or a local install), and the first run needs internet to download libraries.
+(MongoDB Community Server on `localhost:27017`), and the first run needs internet to download libraries.
 The submission does **not** include a folder of `.jar` libraries: JavaFX's native files differ per operating system, and Maven downloads the right ones on each machine.
 `config/application.properties` is never included if it holds a real password.
 
@@ -251,8 +230,8 @@ picture files in `data/images/` (a folder of random-named files, referenced from
 | Symptom | Cause and fix |
 |---|---|
 | *Error: JavaFX runtime components are missing* | You started `MainApp` directly. Run **`Launcher`** instead. |
-| Red "Database problem" panel: *Cannot reach MongoDB* | MongoDB is not running or the URI is wrong. `docker compose up -d`, then press **Retry connection**. Check `MONGODB_URI`. |
-| `docker compose up` says port 27017 is already in use | Another MongoDB is running. Stop it, or use it (the defaults already point at port 27017). |
+| Red "Database problem" panel: *Cannot reach MongoDB* | MongoDB Community Server is not running or the URI is wrong. Start it (Windows: `net start MongoDB`; macOS: `brew services start mongodb-community`), then press **Retry connection**. Check `MONGODB_URI`. |
+| `net start MongoDB` says the service name is invalid | MongoDB was installed without the service option. Run the installer again and tick "Install MongoD as a Service". |
 | *MongoDB rejected the username or password* | Fix the credentials in `MONGODB_URI`. |
 | Pictures show "Image unavailable" | The image file is missing from `data/images`. You started the app from a different folder (set `PRODUCTS_DATA_DIR` to one fixed absolute path), or the file was deleted. |
 | Eclipse: *release version 17 not supported* | Eclipse is using an older JRE. Add a JDK 17+ under Preferences > Java > Installed JREs and select it for the project. |

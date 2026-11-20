@@ -236,7 +236,7 @@ JavaFX has one **application thread** that draws the window and handles clicks; 
 | Situation | Exception | What the user sees |
 |---|---|---|
 | Invalid form input | `ValidationException` (holds a `ValidationResult`) | Message under each bad field, red outline, focus moves to the first one |
-| MongoDB unreachable / timed out | `DatabaseException` ("Cannot reach MongoDB... `docker compose up -d`...") | Red "Database problem" panel with **Retry connection**, and a red toast |
+| MongoDB unreachable / timed out | `DatabaseException` ("Cannot reach MongoDB. Make sure MongoDB Community Server is running...") | Red "Database problem" panel with **Retry connection**, and a red toast |
 | Wrong MongoDB username/password | `DatabaseException` ("MongoDB rejected the username or password...") | same panel |
 | Bad `MONGODB_URI` text | `DatabaseException` ("not a valid MongoDB connection string") | same panel |
 | Product removed by someone else meanwhile | `ProductNotFoundException` | Red status-bar message, list reloads |

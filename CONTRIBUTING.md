@@ -22,7 +22,7 @@ If you disagree with a rule, raise it in the group chat. Do not just ignore it.
 
 1. Your code goes **only** in `components/<your-component>/`.
 2. Do **not** edit another component's folder. If you need a change there, ask the owner in the group chat or open an issue.
-3. Shared files (`README.md`, `CONTRIBUTING.md`, `docs/`, `docker-compose.yml`, `.gitignore`) are changed **only by pull request**, and the PR description must say what changed and why.
+3. Shared files (`README.md`, `CONTRIBUTING.md`, `docs/`, `.gitignore`) are changed **only by pull request**, and the PR description must say what changed and why.
    The one exception: you may edit **your own row** of the team table in `README.md`.
 
 ## 3. Shared names and IDs
@@ -81,7 +81,7 @@ Everyone uses the same versions so the components fit together:
 | MongoDB Java driver | `mongodb-driver-sync` 5.14.0 |
 | JUnit | 5 (Jupiter) |
 | Maven | 3.9 or newer |
-| MongoDB server | 6.0 or newer (the shared `docker-compose.yml` uses 7.0) |
+| MongoDB server | MongoDB Community Server 8.0 or newer, installed locally on `localhost:27017` (no Docker, no Atlas) |
 | IDE | Eclipse IDE for Java Developers (the brief asks for an Eclipse project) |
 
 Package names: `com.marketplace.<component>` (for example `com.marketplace.orders`).
