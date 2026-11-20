@@ -12,8 +12,8 @@ Follow these steps in order. Commands are for a terminal (macOS Terminal, or Git
 | **JDK 17 or newer** | adoptium.net (Eclipse Temurin). A full JDK, not a JRE | `java -version` |
 | **Maven 3.9+** | maven.apache.org (or use Eclipse's built-in Maven) | `mvn -v` |
 | **Eclipse IDE for Java Developers** | eclipse.org/downloads | It includes Maven support (m2e) and Git support (EGit) |
-| **Docker Desktop** (recommended) | docker.com | `docker --version` |
-| or **MongoDB Community Server** | mongodb.com/try/download/community | `mongosh --version` |
+| **MongoDB Community Server 8.0+** | mongodb.com/try/download/community (Windows: keep "Install MongoD as a Service" ticked; macOS: `brew install mongodb-community`) | Starts on `localhost:27017` |
+| **MongoDB Shell (mongosh)** | mongodb.com/try/download/shell | `mongosh --version` |
 
 Tell Git who you are (use the email of your GitHub account):
 
@@ -93,10 +93,17 @@ JavaFX tip: start the app from a small `Launcher` class with a `main` method tha
 
 ## Step 7. Start MongoDB
 
-From the repository root:
+We all use **MongoDB Community Server** installed on our own machine (decision final: no Docker, no Atlas).
 
 ```bash
-docker compose up -d
+# Windows: it runs as a service and starts with Windows. If it is stopped (Command Prompt as administrator):
+net start MongoDB
+
+# macOS (Homebrew)
+brew services start mongodb-community
+
+# Check (any system): must print { ok: 1 }
+mongosh --quiet --eval "db.runCommand({ping:1})"
 ```
 
 It listens on `localhost:27017` with no password (local development only). Use database `marketplace`.
@@ -151,7 +158,7 @@ Done on your own machine, never committed:
 | Merge conflict after `git merge main` | Open the files Git lists, keep the right lines, delete the `<<<<<<<`, `=======`, `>>>>>>>` markers, then `git add` and `git commit` |
 | You committed to `main` by mistake (not pushed yet) | `git branch my-branch-name` then `git reset --hard origin/main`, then `git checkout my-branch-name` |
 | You committed a password | Tell the group straight away and change the password |
-| *Cannot reach MongoDB* | `docker compose up -d` from the repo root; check `docker compose ps` |
+| *Cannot reach MongoDB* | Start MongoDB Community Server (Windows: `net start MongoDB`; macOS: `brew services start mongodb-community`), then check with `mongosh --eval "db.runCommand({ping:1})"` |
 | *JavaFX runtime components are missing* | Run the `Launcher` class, not the `Application` class |
 | Eclipse: *release version 17 not supported* | Add a JDK 17+ in Installed JREs and select it for the project |
 | Permission denied when pushing | Accept the repository invitation, and sign in with the GitHub account that was invited |
