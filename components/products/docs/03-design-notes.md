@@ -66,8 +66,8 @@ flowchart TD
 | | `ProductSearch` | The filtering loops and conditions (pure Java) |
 | | `ImageStorageService` | Validates and copies images, resolves and deletes them |
 | | `SampleDataSeeder`, `PlaceholderImageGenerator` | Sample data and locally drawn pictures |
-| `ui` | `MainController` | Table, filters, details panel, status messages |
-| | `ProductFormController` | The add/edit dialogue, image import, field-level errors |
+| `ui` | `MainController` | Table (8 rows per page), filters, details panel, toast messages; swaps the catalogue for the form and back |
+| | `ProductFormController` | The add/edit form (shown inside the main window, in place of the catalogue), image import, field-level errors and the "Please fix N problems" banner |
 | | `AsyncRunner` | Runs work on a background thread and returns results to the JavaFX thread |
 | | `ProductImageLoader`, `Formatters`, `Dialogs` | Image nodes with fallbacks, £ and date formatting, confirmation dialogue |
 
@@ -138,7 +138,7 @@ The other three are cheap to keep and are the ones a MongoDB query would use onc
 
 ## 4. Search and filtering design
 
-`ProductService.search(filter)`: `repository.findAll()`, then `ProductSearch.filter(all, filter)`, sort by name, and wrap in a `SearchResult` (matches, total count, stock-level counts, categories).
+`ProductService.search(filter)`: `repository.findAll()`, then `ProductSearch.filter(all, filter)`, sort **newest first** (by `createdAt`, then by ID, both descending, as the design says "sorted by newest"), and wrap in a `SearchResult` (matches, total count, stock-level counts, categories). The table then shows 8 matches per page; clicking a column header re-sorts all the matches, not just the visible page.
 
 * **Combined filters** use AND: `ProductSearch.matches` runs five checks (`matchesName`, `matchesCategory`, `matchesPrice`, `matchesAvailability`, `matchesStatus`) and returns `false` at the first one that fails.
 * **Name search** is a case-insensitive "contains" on the trimmed text; blank text matches everything.
@@ -168,7 +168,7 @@ The other three are cheap to keep and are the ones a MongoDB query would use onc
 | User picks a file in the form | Validated and copied immediately (background thread); it appears as a thumbnail. Remembered in `newlyAddedRefs`. |
 | User clicks **X** on a thumbnail added in this session | Removed from the form and the file deleted at once. |
 | User clicks **X** on a thumbnail of an already-saved product | Removed from the form only; the file is deleted by `ProductService.updateProduct` **after** the save succeeds (so Cancel loses nothing). |
-| User clicks **Cancel** or closes the window | `discardNewImages()` deletes every file copied during this dialogue. |
+| User clicks **Cancel** / **Back to catalogue**, or closes the window | `discardNewImages()` (or `discardNewImagesNow()` when the window closes) deletes every file copied while the form was open. |
 | Product saved | `newlyAddedRefs` cleared: the files now belong to the product. |
 | Product deleted | `ProductService.deleteProduct` deletes all its files after the database delete succeeds. |
 
@@ -236,13 +236,13 @@ JavaFX has one **application thread** that draws the window and handles clicks; 
 | Situation | Exception | What the user sees |
 |---|---|---|
 | Invalid form input | `ValidationException` (holds a `ValidationResult`) | Message under each bad field, red outline, focus moves to the first one |
-| MongoDB unreachable / timed out | `DatabaseException` ("Cannot reach MongoDB... `docker compose up -d`...") | Red "Database problem" panel with **Retry connection**; the pill next to the title says "Not connected" |
+| MongoDB unreachable / timed out | `DatabaseException` ("Cannot reach MongoDB... `docker compose up -d`...") | Red "Database problem" panel with **Retry connection**, and a red toast |
 | Wrong MongoDB username/password | `DatabaseException` ("MongoDB rejected the username or password...") | same panel |
 | Bad `MONGODB_URI` text | `DatabaseException` ("not a valid MongoDB connection string") | same panel |
 | Product removed by someone else meanwhile | `ProductNotFoundException` | Red status-bar message, list reloads |
 | Unsupported / oversized / fake image | `ImageStorageException` | Red message under the images in the form, other files in the same selection are still added |
 | Missing image file | none | "Image unavailable" box |
-| Save fails in the form | any of the above | Red banner above the Save button; the dialogue stays open so nothing typed is lost |
+| Save fails in the form | any of the above | Red banner at the top of the form; the form stays open so nothing typed is lost |
 
 There is **no fallback database**: when MongoDB is down the app says so and waits.
 

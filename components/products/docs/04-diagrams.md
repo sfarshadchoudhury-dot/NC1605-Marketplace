@@ -167,13 +167,17 @@ classDiagram
         +close()
     }
     class MainController {
+        -int PAGE_SIZE
         -reloadProducts(String selectProductId)
+        -showPage(String selectProductId)
+        -openProductForm(Product existing)
+        -closeProductForm(Product existing, Product saved)
         -buildFilter() ProductFilter
         -onToggleActive()
         -onDeleteProduct()
     }
     class ProductFormController {
-        +open(AppContext, Window, Product, List) Product
+        +load(AppContext, Product, List, Consumer) LoadedForm
         -onSave()
         -onAddImages()
         -removeImage(String imagePath)
@@ -272,7 +276,7 @@ classDiagram
 ```mermaid
 flowchart TD
     A([Start validateName name]) --> B{"name is null or blank?"}
-    B -- Yes --> C["return Name is required."]
+    B -- Yes --> C["return Enter a product name up to 100 characters"]
     B -- No --> D{"name.trim length is greater than MAX_NAME_LENGTH 100?"}
     D -- Yes --> E["return Name must be 100 characters or fewer."]
     D -- No --> F["return null (valid)"]
@@ -287,12 +291,12 @@ flowchart TD
 flowchart TD
     A([Start validatePrice priceText]) --> B["text = trimmed priceText, or empty text if null"]
     B --> C{"text is empty?"}
-    C -- Yes --> C1["return Price is required."]
+    C -- Yes --> C1["return Enter a price greater than £0.00"]
     C -- No --> D["try value = new BigDecimal text"]
     D --> E{"NumberFormatException?"}
     E -- Yes --> E1["return INVALID_PRICE_MESSAGE"]
     E -- No --> F{"value.signum is less than or equal to 0?"}
-    F -- Yes --> F1["return Price must be greater than zero."]
+    F -- Yes --> F1["return Enter a price greater than £0.00"]
     F -- No --> G{"text matches PRICE_PATTERN? up to 9 digits and at most 2 decimals"}
     G -- No --> G1["return INVALID_PRICE_MESSAGE"]
     G -- Yes --> H["return null (valid)"]
@@ -309,11 +313,11 @@ flowchart TD
 flowchart TD
     A([Start validateStock stockText]) --> B["text = trimmed stockText, or empty text if null"]
     B --> C{"text is empty?"}
-    C -- Yes --> C1["return Stock quantity is required."]
+    C -- Yes --> C1["return Enter the stock as a whole number 0 or more"]
     C -- No --> D{"text matches minus then digits? e.g. -5"}
-    D -- Yes --> D1["return Stock quantity cannot be negative."]
+    D -- Yes --> D1["return Enter the stock as a whole number 0 or more"]
     D -- No --> E{"text matches digits only?"}
-    E -- No --> E1["return Stock quantity must be a whole number"]
+    E -- No --> E1["return Enter the stock as a whole number 0 or more"]
     E -- Yes --> F["try Integer.parseInt text"]
     F --> G{"NumberFormatException? too large for an int"}
     G -- Yes --> G1["return Stock quantity is too large"]
@@ -448,7 +452,7 @@ flowchart TD
 flowchart TD
     A([Start search filter]) --> B["all = repository.findAll"]
     B --> C["matches = ProductSearch.filter all filter"]
-    C --> D["sort matches by name ignoring case, then by id"]
+    C --> D["sort matches newest first: createdAt, then id, both descending"]
     D --> E["return new SearchResult matches, all.size, countByStockLevel all, collectCategories all"]
     E --> Z([End])
 ```
@@ -689,7 +693,7 @@ flowchart TD
     F --> G["back on the JavaFX thread: endBusy"]
     G --> H{"ticket still equals searchTicket? not out of date"}
     H -- No --> Z
-    H -- Yes --> I["applyResult: fill table, choose EMPTY / NO_MATCH / TABLE view, update summary, reselect product"]
+    H -- Yes --> I["applyResult: keep matches newest first, choose EMPTY / NO_MATCH / TABLE view, update summary, showPage: 8 rows, page that holds the product"]
     F -. exception .-> J["handleFailure"]
     I --> Z
     J --> Z
@@ -727,14 +731,14 @@ flowchart TD
     B --> C["result = ProductValidator.validate form"]
     C --> D["showValidation result: message under each bad field, red outline"]
     D --> E{"result.isValid?"}
-    E -- No --> F["focusField result.getFirstErrorField"]
+    E -- No --> F["banner: Please fix N problems before saving, focusField result.getFirstErrorField"]
     E -- Yes --> G["setBusy true, AsyncRunner.run on the background thread"]
     G --> H{"existing product is null?"}
     H -- Yes --> I["productService.addProduct form"]
     H -- No --> J["productService.updateProduct existingId form"]
     I --> K{"succeeded?"}
     J --> K
-    K -- Yes --> L["savedProduct = product, close the dialogue"]
+    K -- Yes --> L["close product: MainController puts the catalogue back and shows the toast"]
     K -- No --> M["onSaveFailed: setBusy false, show field errors or a form-level message"]
     F --> Z([End])
     L --> Z

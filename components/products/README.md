@@ -18,9 +18,9 @@ Both links are view-only for anyone with the link.
 
 The JavaFX screens follow this design:
 
-* **Product catalogue:** sidebar, page header with the database status pill, four summary cards (total, in stock, low stock, out of stock), the product list with search and filters, and the selected product panel with Edit, Deactivate and Delete.
-* **Add / edit product:** a details card (name, price, stock, description, category chips, active) and an images card, with errors shown under each field and in a banner at the top.
-* **States:** loading, empty catalogue, no search results with **Show all products**, the delete confirmation, toast messages after each action, and the **Database problem** panel with **Retry connection**.
+* **Product catalogue:** sidebar, page header with the platform search and avatar, **Refresh** and **+ Add product**, four summary cards (total, in stock, low stock, out of stock), the product list (newest first, 8 per page with page buttons) with search and filters, and the selected product panel with Edit, Deactivate and Delete. The table shows ID, a letter tile and the name, categories, price, the stock number (amber when low, red when out) and a status badge (In stock / Low stock / Out of stock, or Inactive).
+* **Add / edit product:** opens inside the same window (the sidebar stays), with the breadcrumb *Products › Add product* and **← Back to catalogue**. A details card (name, price, stock with hints, description, category chips, active) and an images card (dashed drop zone, thumbnails with ×, the first marked *Thumbnail*). Errors are shown under each field and counted in a banner at the top ("Please fix 4 problems before saving. Nothing has been saved."); the footer says "All fields are valid." once the form is ready.
+* **States:** loading, empty catalogue, no search results with **Show all products**, the delete confirmation, a toast over the bottom of the list after each action (e.g. "✓ PRD-00016 · Wireless Mouse added to the catalogue"), and the **Database problem** panel with **Retry connection**.
 
 | Document | What it is |
 |---|---|

@@ -20,23 +20,23 @@ Requirement IDs (R1, R2, ...) refer to [01-requirements-checklist.md](01-require
 
 | ID | Req. | Steps | Expected outcome | Actual result | Pass/Fail | Evidence |
 |---|---|---|---|---|---|---|
-| M-01 | R1, R32, R36 | With MongoDB running and the database empty, start the app (`mvn javafx:run`). | A loading spinner appears briefly, then "No products yet" with a hint about Add / seed. The pill next to the title says "Connected · marketplace". The list subtitle says "Showing 0 of 0 products" and all four summary cards show 0. | | | |
+| M-01 | R1, R32, R36 | With MongoDB running and the database empty, start the app (`mvn javafx:run`). | A loading spinner appears briefly, then "No products yet" with a hint about Add / seed. The list subtitle says "0 products · sorted by newest" and all four summary cards show 0. | | | |
 | M-02 | R1, R30, R38 | Run `mvn compile exec:java@seed`, then press **Refresh** in the app. | Console: "Added 15 product(s), skipped 0". The table lists 15 products with coloured placeholder pictures; one product ("Standing Desk Converter") shows "No image". | | | |
 | M-03 | R38 | Run the seed command a second time. Press Refresh. | Console: "Added 0 product(s), skipped 15". The table still has exactly 15 products (no duplicates). | | | |
-| M-04 | R1, R11, R31 | Look at the table. | Each row shows a thumbnail, name with a one-line description, ID (`PRD-nnnnn`), categories, price in £, a coloured stock badge (green in stock, amber low, red out) and an Active/Inactive badge. Inactive rows are greyed. | | | |
+| M-04 | R1, R11, R31 | Look at the table. | Each row shows the ID (`PRD-nnnnn`), a letter tile and the name, categories, price in £, the stock number (amber when low, red at 0) and a status badge (green In stock, amber Low stock, red Out of stock, grey Inactive). Inactive rows are greyed. Newest products are first; 8 rows per page with "Showing 1 to 8 of N products" and page buttons 1, 2, →. | | | |
 | M-05 | R20 | Click the column headers PRICE, STOCK, PRODUCT, STATUS (click twice for descending). | Rows re-order each time (price numerically, e.g. £9.99 before £29.99, not as text). | | | |
-| M-06 | R1, R10, R11 | Click "Mechanical Keyboard". Then click the 2nd and 3rd thumbnails in the details panel. | The panel shows a large picture, three thumbnails, name, ID, price, status and stock badges, category chips, description, created/updated times, and Edit / Deactivate / Delete buttons. Clicking a thumbnail changes the big picture and moves the highlight. | | | |
+| M-06 | R1, R10, R11 | Click "Mechanical Keyboard". Then click the 2nd and 3rd thumbnails in the details panel. | The panel shows a large picture, three thumbnails, name, "PRD-nnnnn · created <date>", price, stock badge and "N units", category chips, description, and Edit / Deactivate / Delete buttons. Clicking a thumbnail changes the big picture and moves the highlight. | | | |
 
 ## B. Adding products and validation
 
 | ID | Req. | Steps | Expected outcome | Actual result | Pass/Fail | Evidence |
 |---|---|---|---|---|---|---|
-| M-07 | R2, R8, R9, R16 | Click **+ Add product**. Name `Test Mug`, description `Blue mug`, price `4.5`, stock `12`, tick "Home & Kitchen" and "Gifts" (add it with *Add category*), add `lamp1.png` and `lamp2.jpg`. **Save product.** | Dialogue closes. Green status message: `Added "Test Mug" (PRD-000nn)`. The new row is selected; price shows £4.50; both categories and both images appear in the details panel. | | | |
-| M-08 | R13 to R16 | **+ Add product**, press **Save product** without typing anything. | Messages under the fields: "Name is required.", "Price is required.", "Stock quantity is required.", "Select or add at least one category." Those fields have a red outline; the cursor moves to Name; nothing is saved. | | | |
-| M-09 | R13 | Name: three spaces only. Fill the other fields correctly. Save. | "Name is required." Nothing saved. | | | |
-| M-10 | R14 | Try prices `0`, `-5`, `abc`, `12.345`, `1e3`, `£5`. Save each time. | `0` and `-5`: "Price must be greater than zero." The others: "Enter a valid price such as 19.99 (digits only, at most 2 decimal places)." | | | |
-| M-11 | R15 | Try stock `-1`, `2.5`, `abc`, `99999999999`. | `-1`: "Stock quantity cannot be negative." `2.5` and `abc`: "...must be a whole number...". `99999999999`: "...too large...". Also check `0` is **accepted**. | | | |
-| M-12 | R8 | Fill everything correctly but tick no category. Save. | "Select or add at least one category." | | | |
+| M-07 | R2, R8, R9, R16 | Click **+ Add product**. Name `Test Mug`, description `Blue mug`, price `4.5`, stock `12`, tick "Home & Kitchen" and "Gifts" (add it with *Add category*), add `lamp1.png` and `lamp2.jpg`. **Save product.** | The form opened inside the window (breadcrumb "Products › Add product", subtitle shows "next: PRD-000nn") and closes back to the catalogue. Toast: `✓ PRD-000nn · Test Mug added to the catalogue`. The new row is selected; price shows £4.50; both categories and both images appear in the details panel. | | | |
+| M-08 | R13 to R16 | **+ Add product**, press **Save product** without typing anything. | Banner: "Please fix 4 problems before saving. Nothing has been saved." Messages under the fields: "Enter a product name (up to 100 characters).", "Enter a price greater than £0.00.", "Enter the stock as a whole number (0 or more).", "Choose at least one category." Those fields have a red outline; the cursor moves to Name; nothing is saved. After filling everything in, the banner goes and the footer says "All fields are valid." | | | |
+| M-09 | R13 | Name: three spaces only. Fill the other fields correctly. Save. | "Enter a product name (up to 100 characters)." Nothing saved. | | | |
+| M-10 | R14 | Try prices `0`, `-5`, `abc`, `12.345`, `1e3`, `£5`. Save each time. | `0` and `-5`: "Enter a price greater than £0.00." The others: "Enter a valid price such as 19.99 (digits only, at most 2 decimal places)." | | | |
+| M-11 | R15 | Try stock `-1`, `2.5`, `abc`, `99999999999`. | `-1`, `2.5` and `abc`: "Enter the stock as a whole number (0 or more)." `99999999999`: "...too large...". Also check `0` is **accepted**. | | | |
+| M-12 | R8 | Fill everything correctly but tick no category. Save. | "Choose at least one category." | | | |
 | M-13 | R8 | In the new-category box type `   Garden   tools  ` and press Enter. Then type `garden TOOLS` and press Enter. | One tick-box appears, named `Garden tools` (spaces tidied) and is ticked. The second entry does not create a duplicate. A 31-character name shows an error. | | | |
 
 ## C. Images
@@ -59,9 +59,9 @@ Requirement IDs (R1, R2, ...) refer to [01-requirements-checklist.md](01-require
 |---|---|---|---|---|---|---|
 | M-23 | R3, R20 | Select "Test Mug" and click **Edit** (or double-click the row). Change name, description, price to `5.25`, stock to `3`, categories, untick Active. Save. | The title shows "Product ID: PRD-000nn (the ID never changes)". After saving, the same ID is shown with the new values; there is still only one "Test Mug" row; the stock badge turns amber ("Low stock"). | | | |
 | M-24 | R16 | Edit a product, set price to `abc` and stock to `-3`, Save. | Field errors shown; nothing changes; reopening the product shows the old values. | | | |
-| M-25 | R4 | Select an active product, click **Deactivate**, then **Activate**. | After Deactivate: grey row, "Inactive" badge, button now says "Activate", toast message `... is now inactive.` The product is still in the list and stock is unchanged. After Activate it is back to normal. | | | |
+| M-25 | R4 | Select an active product, click **Deactivate**, then **Activate**. | After Deactivate: grey row, "Inactive" badge, button now says "Activate", toast message `✓ PRD-000nn · ... deactivated` The product is still in the list and stock is unchanged. After Activate it is back to normal. | | | |
 | M-26 | R5, R33 | Click **Delete**. A dialogue "Delete "Test Mug"?" appears. Click **Cancel**. | The dialogue text warns it cannot be undone and suggests Deactivate. Cancel is the highlighted default. After Cancel nothing is deleted. | | | |
-| M-27 | R5 | Click **Delete** again and **Delete product**. | The row disappears, toast message `Deleted "Test Mug" (PRD-000nn).`, the Total products card drops by one, the product's image files are removed from `data/images/`, the details panel returns to "Select a product". | | | |
+| M-27 | R5 | Click **Delete** again and **Delete product**. | The row disappears, toast message `✓ PRD-000nn · Test Mug deleted`, the Total products card drops by one, the product's image files are removed from `data/images/`, the details panel returns to "Select a product". | | | |
 
 ## E. Search and filters
 
@@ -81,9 +81,9 @@ Requirement IDs (R1, R2, ...) refer to [01-requirements-checklist.md](01-require
 | ID | Req. | Steps | Expected outcome | Actual result | Pass/Fail | Evidence |
 |---|---|---|---|---|---|---|
 | M-36 | R17 | Add a product, close the app completely, start it again. | The product (with its price, stock, categories and pictures) is still there. | | | |
-| M-37 | R32, R37 | With the app open: `docker compose stop`. Click **Refresh**. Then `docker compose start`, click **Retry connection**. | After a few seconds a red "Database problem" panel appears with "Cannot reach MongoDB..." and the pill next to the title says "Not connected". After Retry the list returns. | | | |
+| M-37 | R32, R37 | With the app open: `docker compose stop`. Click **Refresh**. Then `docker compose start`, click **Retry connection**. | After a few seconds a red "Database problem" panel appears with "Cannot reach MongoDB..." and a red toast. After Retry the list returns. | | | |
 | M-38 | R37 | `docker compose stop`, start the app. | Same red panel within about 3 seconds, with the instruction `docker compose up -d`. No in-memory fallback data is shown. Add/Edit report "Not connected to MongoDB". | | | |
-| M-39 | R35 | Stop the app. Start it with `MONGODB_DATABASE=marketplace_demo` (see the README for the shell syntax), or create `config/application.properties` with `mongodb.database=marketplace_demo`. | The pill next to the title shows `Connected · marketplace_demo` and the catalogue is empty (a different database). The environment variable wins over the file if both are set. | | | |
+| M-39 | R35 | Stop the app. Start it with `MONGODB_DATABASE=marketplace_demo` (see the README for the shell syntax), or create `config/application.properties` with `mongodb.database=marketplace_demo`. | The catalogue is empty (a different database). The environment variable wins over the file if both are set. | | | |
 | M-40 | R34 | Start the app with MongoDB stopped. During the ~3 seconds before the error appears, try dragging the window and clicking Refresh. | The window keeps responding (it does not freeze or turn "Not Responding"). | | | |
 
 ## G. Platforms
