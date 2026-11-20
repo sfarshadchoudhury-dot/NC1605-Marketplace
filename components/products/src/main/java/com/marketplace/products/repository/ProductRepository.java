@@ -14,6 +14,9 @@ public interface ProductRepository {
     /** Returns a new unique product ID such as "PRD-00007". Never returns the same ID twice. */
     String nextProductId();
 
+    /** Returns the ID that nextProductId() would give now, without using it up (for display only). */
+    String peekNextProductId();
+
     void insert(Product product);
 
     /** Saves changes to an existing product (matched by ID). Returns false if no such product exists. */

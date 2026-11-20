@@ -26,6 +26,11 @@ public class InMemoryProductRepository implements ProductRepository {
     }
 
     @Override
+    public String peekNextProductId() {
+        return String.format("PRD-%05d", counter + 1);
+    }
+
+    @Override
     public void insert(Product product) {
         store.put(product.getId(), copyOf(product));
     }

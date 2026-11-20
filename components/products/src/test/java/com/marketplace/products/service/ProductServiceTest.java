@@ -253,7 +253,15 @@ class ProductServiceTest {
     // ---------- search through the service ----------
 
     @Test
-    void searchReturnsMatchesSortedByNameWithCatalogueWideCounts() {
+    void previewNextProductIdDoesNotUseUpTheNumber() {
+        String preview = service.previewNextProductId();
+        assertEquals(preview, service.previewNextProductId(), "peeking twice gives the same ID");
+        Product added = service.addProduct(form("Desk lamp", "20", "4", "Office"));
+        assertEquals(preview, added.getId(), "the next product really gets the previewed ID");
+    }
+
+    @Test
+    void searchReturnsMatchesNewestFirstWithCatalogueWideCounts() {
         service.addProduct(form("banana stand", "10", "0", "Home & Kitchen"));
         service.addProduct(form("Apple slicer", "5", "3", "Home & Kitchen"));
         service.addProduct(form("cherry pitter", "7", "50", "Home & Kitchen"));
@@ -267,7 +275,11 @@ class ProductServiceTest {
         assertEquals(List.of("cherry pitter"), names);
 
         SearchResult all = service.search(new ProductFilter());
-        assertEquals("Apple slicer", all.matches().get(0).getName(), "sorted ignoring case");
+        List<String> allNames = new ArrayList<>();
+        for (Product p : all.matches()) {
+            allNames.add(p.getName());
+        }
+        assertEquals(List.of("cherry pitter", "Apple slicer", "banana stand"), allNames, "newest first");
         assertEquals(3, all.totalCount());
         assertEquals(1, all.stockLevelCounts()[com.marketplace.products.model.StockLevel.OUT_OF_STOCK.ordinal()]);
     }

@@ -13,7 +13,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * The business rules of the Products component. The UI talks only to this class
@@ -30,14 +29,28 @@ public class ProductService {
         this.imageStorage = imageStorage;
     }
 
-    /** Loads the catalogue, applies the filter and returns the matches sorted by name. */
+    /**
+     * Loads the catalogue, applies the filter and returns the matches newest first
+     * (like the Figma design: "sorted by newest"). Products created at the same instant
+     * are ordered by ID, highest first, because IDs are handed out in creation order.
+     */
     public SearchResult search(ProductFilter filter) {
         List<Product> all = repository.findAll();
         List<Product> matches = ProductSearch.filter(all, filter);
-        matches.sort(Comparator.comparing((Product p) -> p.getName().toLowerCase(Locale.ROOT))
-                .thenComparing(Product::getId));
+        matches.sort(Comparator.comparing(Product::getCreatedAt)
+                .thenComparing(Product::getId)
+                .reversed());
         return new SearchResult(matches, all.size(), ProductSearch.countByStockLevel(all),
                 ProductSearch.collectCategories(all));
+    }
+
+    /**
+     * The ID the next new product will probably get, for display only (the add form shows it).
+     * It does not reserve the number: another user may take it first, and the real ID is
+     * only assigned when the product is saved.
+     */
+    public String previewNextProductId() {
+        return repository.peekNextProductId();
     }
 
     public List<Product> getAllProducts() {

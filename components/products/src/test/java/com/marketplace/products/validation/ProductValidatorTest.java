@@ -24,7 +24,7 @@ class ProductValidatorTest {
     @NullAndEmptySource
     @ValueSource(strings = {" ", "     ", "\t", "\n", " \t \n "})
     void blankOrWhitespaceOnlyNameIsRejected(String name) {
-        assertEquals("Name is required.", ProductValidator.validateName(name));
+        assertEquals("Enter a product name (up to 100 characters).", ProductValidator.validateName(name));
     }
 
     @ParameterizedTest
@@ -46,13 +46,13 @@ class ProductValidatorTest {
     @NullAndEmptySource
     @ValueSource(strings = {"   "})
     void missingPriceIsRequired(String price) {
-        assertEquals("Price is required.", ProductValidator.validatePrice(price));
+        assertEquals("Enter a price greater than £0.00.", ProductValidator.validatePrice(price));
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"0", "0.0", "0.00", "-1", "-0.01", "-100.50"})
     void zeroAndNegativePricesAreRejected(String price) {
-        assertEquals("Price must be greater than zero.", ProductValidator.validatePrice(price));
+        assertEquals("Enter a price greater than £0.00.", ProductValidator.validatePrice(price));
     }
 
     @ParameterizedTest
@@ -85,13 +85,13 @@ class ProductValidatorTest {
     @NullAndEmptySource
     @ValueSource(strings = {"  "})
     void missingStockIsRequired(String stock) {
-        assertEquals("Stock quantity is required.", ProductValidator.validateStock(stock));
+        assertEquals("Enter the stock as a whole number (0 or more).", ProductValidator.validateStock(stock));
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"-1", "-10", "-999"})
     void negativeStockIsRejected(String stock) {
-        assertEquals("Stock quantity cannot be negative.", ProductValidator.validateStock(stock));
+        assertEquals("Enter the stock as a whole number (0 or more).", ProductValidator.validateStock(stock));
     }
 
     @ParameterizedTest
@@ -99,7 +99,7 @@ class ProductValidatorTest {
     void fractionalOrNonNumericStockIsRejected(String stock) {
         String message = ProductValidator.validateStock(stock);
         assertNotNull(message, "should have been rejected: " + stock);
-        assertTrue(message.startsWith("Stock quantity must be a whole number"), message);
+        assertEquals("Enter the stock as a whole number (0 or more).", message);
     }
 
     @Test
@@ -130,6 +130,7 @@ class ProductValidatorTest {
         assertNotNull(ProductValidator.validateCategories(List.of("  ", "")));
         assertNull(ProductValidator.validateCategories(List.of("Books")));
         assertNull(ProductValidator.validateCategories(List.of("Books", "Office")));
+        assertEquals("Choose at least one category.", ProductValidator.validateCategories(new ArrayList<>()));
     }
 
     @Test
@@ -185,7 +186,7 @@ class ProductValidatorTest {
         ProductForm form = new ProductForm("Lamp", "", "10", "-1", true, List.of("Office"), new ArrayList<>());
         ValidationResult result = ProductValidator.validate(form);
         assertEquals(1, result.getErrors().size());
-        assertEquals("Stock quantity cannot be negative.", result.getError(ProductValidator.FIELD_STOCK));
+        assertEquals("Enter the stock as a whole number (0 or more).", result.getError(ProductValidator.FIELD_STOCK));
     }
 
     // ---------- Search-bar price range ----------

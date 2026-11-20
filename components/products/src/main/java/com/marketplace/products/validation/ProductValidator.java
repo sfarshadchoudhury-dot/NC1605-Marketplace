@@ -33,6 +33,9 @@ public final class ProductValidator {
     private static final Pattern WHOLE_NUMBER_PATTERN = Pattern.compile("\\d+");
     private static final Pattern NEGATIVE_WHOLE_NUMBER_PATTERN = Pattern.compile("-\\d+");
 
+    // The wording of these messages follows the Figma design (the "validation" screen).
+    private static final String PRICE_REQUIRED_MESSAGE = "Enter a price greater than £0.00.";
+    private static final String STOCK_REQUIRED_MESSAGE = "Enter the stock as a whole number (0 or more).";
     private static final String INVALID_PRICE_MESSAGE =
             "Enter a valid price such as 19.99 (digits only, at most 2 decimal places).";
 
@@ -53,10 +56,10 @@ public final class ProductValidator {
 
     public static String validateName(String name) {
         if (name == null || name.isBlank()) {
-            return "Name is required.";
+            return "Enter a product name (up to " + MAX_NAME_LENGTH + " characters).";
         }
         if (name.trim().length() > MAX_NAME_LENGTH) {
-            return "Name must be " + MAX_NAME_LENGTH + " characters or fewer.";
+            return "Shorten the name to " + MAX_NAME_LENGTH + " characters or fewer.";
         }
         return null;
     }
@@ -71,7 +74,7 @@ public final class ProductValidator {
     public static String validatePrice(String priceText) {
         String text = priceText == null ? "" : priceText.trim();
         if (text.isEmpty()) {
-            return "Price is required.";
+            return PRICE_REQUIRED_MESSAGE;
         }
         BigDecimal value;
         try {
@@ -80,7 +83,7 @@ public final class ProductValidator {
             return INVALID_PRICE_MESSAGE;
         }
         if (value.signum() <= 0) {
-            return "Price must be greater than zero.";
+            return PRICE_REQUIRED_MESSAGE;
         }
         if (!PRICE_PATTERN.matcher(text).matches()) {
             return INVALID_PRICE_MESSAGE;
@@ -91,13 +94,13 @@ public final class ProductValidator {
     public static String validateStock(String stockText) {
         String text = stockText == null ? "" : stockText.trim();
         if (text.isEmpty()) {
-            return "Stock quantity is required.";
+            return STOCK_REQUIRED_MESSAGE;
         }
         if (NEGATIVE_WHOLE_NUMBER_PATTERN.matcher(text).matches()) {
-            return "Stock quantity cannot be negative.";
+            return STOCK_REQUIRED_MESSAGE;
         }
         if (!WHOLE_NUMBER_PATTERN.matcher(text).matches()) {
-            return "Stock quantity must be a whole number (no decimals or letters).";
+            return STOCK_REQUIRED_MESSAGE;
         }
         try {
             Integer.parseInt(text);
@@ -110,7 +113,7 @@ public final class ProductValidator {
     public static String validateCategories(List<String> categories) {
         List<String> cleaned = Categories.cleanList(categories);
         if (cleaned.isEmpty()) {
-            return "Select or add at least one category.";
+            return "Choose at least one category.";
         }
         for (String category : cleaned) {
             if (category.length() > Categories.MAX_NAME_LENGTH) {

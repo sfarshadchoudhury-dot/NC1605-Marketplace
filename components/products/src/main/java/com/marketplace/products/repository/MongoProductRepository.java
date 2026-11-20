@@ -67,6 +67,15 @@ public class MongoProductRepository implements ProductRepository {
     }
 
     @Override
+    public String peekNextProductId() {
+        return run(() -> {
+            Document counter = counters.find(eq("_id", PRODUCT_COUNTER_ID)).first();
+            long current = counter == null ? 0 : ((Number) counter.get("seq")).longValue();
+            return ID_PREFIX + String.format("%05d", current + 1);
+        });
+    }
+
+    @Override
     public void insert(Product product) {
         run(() -> {
             products.insertOne(ProductMapper.toDocument(product));
