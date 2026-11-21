@@ -108,6 +108,53 @@ mongosh --quiet --eval "db.runCommand({ping:1})"
 
 It listens on `localhost:27017` with no password (local development only). Use database `marketplace`.
 
+## Step 7a. Load the sample products (seed)
+
+Everyone should have the **same 15 sample products with the same photos** (PRD-00001 to PRD-00015), so screenshots, tests and links from your component (for example an order line with `productId: "PRD-00003"`) match on every computer.
+The photos are stored in the repository (`components/products/src/main/resources/com/marketplace/products/sample-images/`), so you do not download anything yourself.
+
+**Do this once, after Step 7 (MongoDB must be running):**
+
+```bash
+# 1. Get the latest code (the Products component and its photos)
+git checkout staging
+git pull
+
+# 2. Go to the Products component (the folder with pom.xml)
+cd components/products
+
+# 3. Load the samples
+mvn compile exec:java@seed
+```
+
+You should see `Added 15 product(s), skipped 0`. Running it again is safe: it says `skipped 15` and changes nothing.
+
+**In Eclipse instead of Maven:** import `components/products` as an existing Maven project (Step 6), then right-click `src/main/java/com/marketplace/products/SeedMain.java` > **Run As > Java Application**.
+
+**Check it worked:**
+
+```bash
+mongosh marketplace --quiet --eval "db.products.countDocuments()"      # must print 15
+```
+
+To see the products and their photos, start the Products app from the same folder: `mvn javafx:run` (or run `Launcher` in Eclipse).
+
+**Seeded before the photos were added, or your IDs do not start at PRD-00001?** Reset the sample data once and seed again. This deletes **all** products in your own local database (nobody else's) and restarts the IDs at PRD-00001:
+
+```bash
+mongosh marketplace --eval "db.products.drop(); db.counters.deleteOne({_id: 'products'})"
+mvn compile exec:java@seed
+```
+
+The photos are copied into `components/products/data/images/` on your computer. That folder is git-ignored: never commit it. Run the seed command from `components/products`, or the photos end up in a different `data` folder and the app shows "Image unavailable".
+
+| Message | Fix |
+|---|---|
+| `SEED FAILED: Cannot reach MongoDB` | Start MongoDB (Step 7), then run the seed again |
+| `Added 0 product(s), skipped 15` but you see no photos | You seeded before the photos existed: use the reset commands above |
+| `mvn` is not recognised | Install Maven (Step 1) or use the Eclipse way above |
+| `No POM in this directory` | You are not in `components/products`: run `cd components/products` first |
+
 ## Step 8. Daily routine
 
 ```bash
@@ -159,6 +206,7 @@ Done on your own machine, never committed:
 | You committed to `main` by mistake (not pushed yet) | `git branch my-branch-name` then `git reset --hard origin/main`, then `git checkout my-branch-name` |
 | You committed a password | Tell the group straight away and change the password |
 | *Cannot reach MongoDB* | Start MongoDB Community Server (Windows: `net start MongoDB`; macOS: `brew services start mongodb-community`), then check with `mongosh --eval "db.runCommand({ping:1})"` |
+| Seed loaded but no product photos | See Step 7a: reset the sample data and seed again from `components/products` |
 | *JavaFX runtime components are missing* | Run the `Launcher` class, not the `Application` class |
 | Eclipse: *release version 17 not supported* | Add a JDK 17+ in Installed JREs and select it for the project |
 | Permission denied when pushing | Accept the repository invitation, and sign in with the GitHub account that was invited |
