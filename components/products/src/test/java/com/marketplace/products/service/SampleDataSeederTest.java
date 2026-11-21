@@ -14,6 +14,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /** The seed logic tested with the in-memory fake: re-running must never duplicate or overwrite. */
@@ -106,8 +107,6 @@ class SampleDataSeederTest {
         boolean hasInactive = false;
         boolean hasOutOfStock = false;
         boolean hasLowStock = false;
-        boolean hasNoImage = false;
-        boolean hasManyImages = false;
         boolean hasManyCategories = false;
         Set<String> ids = new HashSet<>();
         Set<String> names = new HashSet<>();
@@ -118,8 +117,7 @@ class SampleDataSeederTest {
             hasInactive |= !product.isActive();
             hasOutOfStock |= product.getStockQuantity() == 0;
             hasLowStock |= product.getStockQuantity() > 0 && product.getStockQuantity() <= 5;
-            hasNoImage |= product.getImagePaths().isEmpty();
-            hasManyImages |= product.getImagePaths().size() >= 2;
+            assertEquals(1, product.getImagePaths().size(), "every sample gets its one photo: " + product.getName());
             hasManyCategories |= product.getCategories().size() >= 2;
             assertTrue(product.getPrice().signum() > 0);
             for (String imagePath : product.getImagePaths()) {
@@ -131,11 +129,19 @@ class SampleDataSeederTest {
         assertTrue(hasInactive, "need an inactive sample");
         assertTrue(hasOutOfStock, "need an out-of-stock sample");
         assertTrue(hasLowStock, "need a low-stock sample");
-        assertTrue(hasNoImage, "need a sample with no image to show the empty-image state");
-        assertTrue(hasManyImages, "need a sample with multiple images");
         assertTrue(hasManyCategories, "need a sample with multiple categories");
         assertEquals(products.size(), ids.size(), "IDs are unique");
         assertEquals(products.size(), names.size(), "names are unique");
+    }
+
+    @Test
+    void everySampleHasItsPhotoInTheProject() {
+        for (String name : SampleDataSeeder.sampleNames()) {
+            String resource = SampleDataSeeder.photoResource(name);
+            assertNotNull(SampleDataSeeder.class.getResource(resource), "missing photo " + resource + " for " + name);
+        }
+        assertEquals("/com/marketplace/products/sample-images/beginner-s-guide-to-java-programming.jpg",
+                SampleDataSeeder.photoResource("Beginner's Guide to Java Programming"));
     }
 
     private long countImageFiles() throws Exception {

@@ -65,7 +65,7 @@ flowchart TD
 | `service` | `ProductService` | Add, edit, activate/deactivate, delete, search. Validates again before saving |
 | | `ProductSearch` | The filtering loops and conditions (pure Java) |
 | | `ImageStorageService` | Validates and copies images, resolves and deletes them |
-| | `SampleDataSeeder`, `PlaceholderImageGenerator` | Sample data and locally drawn pictures |
+| | `SampleDataSeeder`, `PlaceholderImageGenerator` | Sample data with the product photos stored in the project (a drawn picture only if a photo is missing) |
 | `ui` | `MainController` | Table (8 rows per page), filters, details panel, toast messages; swaps the catalogue for the form and back |
 | | `ProductFormController` | The add/edit form (shown inside the main window, in place of the catalogue), image import, field-level errors and the "Please fix N problems" banner |
 | | `AsyncRunner` | Runs work on a background thread and returns results to the JavaFX thread |
