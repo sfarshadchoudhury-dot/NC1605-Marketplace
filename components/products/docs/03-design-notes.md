@@ -206,19 +206,19 @@ Deleting a product leaves any order or review that mentions it pointing at nothi
 
 All components can share the same MongoDB database (default `marketplace`) with one collection each (`products`, `orders`, `customers`, ...). Use the same `MONGODB_URI` / `MONGODB_DATABASE` settings. Only `products` and `counters` (document `_id: "products"`) belong to this component.
 
-## 7. Stock and the future Inventory component
+## 7. Stock and the Inventory component
 
-The brief keeps a **stock quantity on the product** (this component: `Product.stockQuantity`, validated as a non-negative integer) while the Inventory component keeps stock **per warehouse**. Possible ways to connect them later:
+**Decision (final, `SHARED-CONVENTIONS.md` Q1): Products owns the stock number.** `Product.stockQuantity` (validated as a non-negative integer) is the stock available for sale and is edited in the Products screen. The Inventory component keeps per-warehouse records that only show where that stock is kept. The options that were considered:
 
 | Option | How | Pros / cons |
 |---|---|---|
-| **A. Products owns the number** (what exists now) | Orders and Inventory read `stockQuantity` and ask Products to change it | Simplest; but Inventory's per-warehouse numbers can disagree with it |
+| **A. Products owns the number** (chosen) | Orders and Inventory read `stockQuantity` and ask Products to change it | Simplest; but Inventory's per-warehouse numbers can disagree with it |
 | **B. Inventory is the source of truth** | Inventory sums its warehouse quantities per `productId` and writes the total into `Product.stockQuantity` (a new `ProductService` method such as `updateStockQuantity(productId, total)`); the stock box in the form becomes read-only | One truth; needs Inventory to exist first |
 | **C. Reconcile** | Keep both and add a report listing products where `stockQuantity` differs from the warehouse total (the brief's optional "highlight discrepancies") | Safe while both are still being built |
 
-When Orders start reducing stock, avoid "read, subtract, write": two orders at once could oversell. Use one atomic MongoDB update that only succeeds if enough stock remains, for example
+Orders reduce stock (Q5) without "read, subtract, write": two orders at once could oversell. Use one atomic MongoDB update that only succeeds if enough stock remains, for example
 `updateOne({ _id: id, stockQuantity: { $gte: qty } }, { $inc: { stockQuantity: -qty } })` and treat a result of `matchedCount == 0` as "insufficient stock".
-(Described, not implemented, because Orders is not part of this component.)
+(This update is made by the Orders component; it is the only write another component makes to `products`.)
 
 ## 8. Threading model
 
