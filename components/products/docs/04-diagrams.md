@@ -238,7 +238,7 @@ classDiagram
 
 The brief asks for a **group** diagram showing how each component links to the others, with the Products classes in red.
 The skeleton below shows the **one link every other component needs from Products: the product ID**.
-`Order line`, `Review` and `Warehouse stock` stand for classes owned by the other components; their final names, attributes and multiplicities follow `docs/SHARED-CONVENTIONS.md` at the repository root.
+`Order line`, `Review` and `Warehouse stock` stand for classes owned by the other components; their names, attributes and multiplicities are fixed by `docs/SHARED-CONVENTIONS.md` at the repository root.
 
 ```mermaid
 classDiagram

@@ -2,9 +2,7 @@
 
 This is the contract between the seven components. Orders, Reviews, Inventory, Delivery and Finance all link to each other through the names below, so the class diagrams, flowcharts and code must use them **exactly as written**.
 
-To change anything here: agree it in the group chat, then open a pull request that updates this file (see [CONTRIBUTING.md](../CONTRIBUTING.md), section 3).
-
-Items marked **PROPOSED** still need the group's agreement. Once agreed, change the marker to **AGREED** and add the date.
+**Everything in this file is final.** It is maintained by the repository owner (Farshad); only the owner changes it (see [CONTRIBUTING.md](../CONTRIBUTING.md), section 3).
 
 ---
 
@@ -15,12 +13,12 @@ Every ID is a **`String`**, never a number or a MongoDB `ObjectId`. It is set on
 | Field name (use exactly) | Owned by | Format | Example | Status |
 |---|---|---|---|---|
 | `productId` | Products | `PRD-` + 5 digits | `PRD-00007` | **AGREED** (already in the Products code) |
-| `customerId` | Customers | `CUS-` + 5 digits | `CUS-00012` | PROPOSED |
-| `orderId` | Orders | `ORD-` + 5 digits | `ORD-00103` | PROPOSED |
-| `warehouseId` | Inventory / Warehousing | `WHS-` + 3 digits | `WHS-001` | PROPOSED |
-| `shipmentId` | Delivery & Logistics | `SHP-` + 5 digits | `SHP-00045` | PROPOSED |
-| `reviewId` | Reviews & Ratings | `REV-` + 5 digits | `REV-00230` | PROPOSED |
-| `transactionId` | Finance & Reporting | `TXN-` + 5 digits | `TXN-00981` | PROPOSED |
+| `customerId` | Customers | `CUS-` + 5 digits | `CUS-00012` | **AGREED** |
+| `orderId` | Orders | `ORD-` + 5 digits | `ORD-00103` | **AGREED** |
+| `warehouseId` | Inventory / Warehousing | `WHS-` + 3 digits | `WHS-001` | **AGREED** |
+| `shipmentId` | Delivery & Logistics | `SHP-` + 5 digits | `SHP-00045` | **AGREED** |
+| `reviewId` | Reviews & Ratings | `REV-` + 5 digits | `REV-00230` | **AGREED** |
+| `transactionId` | Finance & Reporting | `TXN-` + 5 digits | `TXN-00981` | **AGREED** |
 
 Rules:
 
@@ -45,21 +43,21 @@ Rules:
 
 * Database name: **`marketplace`**
 * Connection: `mongodb://localhost:27017` by default. Override with the environment variable **`MONGODB_URI`**, and the database with **`MONGODB_DATABASE`**. Never hard-code a password.
-* Server: **MongoDB Community Server** (8.0 or newer) installed locally on each machine. **AGREED (final)**: no Docker, no Atlas. Start it with Windows: `net start MongoDB` (or it starts by itself as a service); macOS: `brew services start mongodb-community`.
+* Server: **MongoDB Community Server** (8.0 or newer) installed locally on each machine. **AGREED**: no Docker, no Atlas. Start it with Windows: `net start MongoDB` (or it starts by itself as a service); macOS: `brew services start mongodb-community`.
 
 | Collection | Owner | Holds | Status |
 |---|---|---|---|
 | `products` | Products | The product catalogue | **AGREED** |
 | `counters` | Shared | One document per ID sequence (section 3.2) | **AGREED** |
-| `customers` | Customers | Customer accounts and addresses | PROPOSED |
-| `orders` | Orders | Orders with their order lines embedded | PROPOSED |
-| `shipments` | Delivery & Logistics | Deliveries and tracking status | PROPOSED |
-| `warehouses` | Inventory / Warehousing | Warehouse locations | PROPOSED |
-| `inventory` | Inventory / Warehousing | Stock per `productId` per `warehouseId` | PROPOSED |
-| `reviews` | Reviews & Ratings | Ratings and comments | PROPOSED |
-| `transactions` | Finance & Reporting | Payments and refunds | PROPOSED |
+| `customers` | Customers | Customer accounts and addresses | **AGREED** |
+| `orders` | Orders | Orders with their order lines embedded | **AGREED** |
+| `shipments` | Delivery & Logistics | Deliveries and tracking status | **AGREED** |
+| `warehouses` | Inventory / Warehousing | Warehouse locations | **AGREED** |
+| `inventory` | Inventory / Warehousing | Stock per `productId` per `warehouseId` | **AGREED** |
+| `reviews` | Reviews & Ratings | Ratings and comments | **AGREED** |
+| `transactions` | Finance & Reporting | Payments and refunds | **AGREED** |
 
-Only the owner writes to a collection. Everyone may read any collection.
+Only the owner writes to a collection. Everyone may read any collection. The one exception: Orders reduces `products.stockQuantity` with the single atomic update in Q5.
 
 ### 3.2 The shared `counters` collection
 
@@ -98,19 +96,20 @@ Why the snapshot? If a product's price changes later, old orders must still show
 
 Before creating a record that points to a product, check that the product exists and `active` is `true`.
 
-## 5. Open questions (to agree in the group chat)
+## 5. Decisions
 
-| # | Question | Proposal | Status |
+| # | Question | Decision | Status |
 |---|---|---|---|
-| Q1 | Who owns the stock number: `products.stockQuantity` or Inventory's per-warehouse records? | Inventory is the source of truth. It sums `quantity` per `productId` across warehouses and Products shows that total (read-only) | PROPOSED |
-| Q2 | Is a SKU (for example `ZNY-2048` in the Inventory mock-up) a separate field? | No separate SKU. `productId` (`PRD-00007`) is the one product identifier shown everywhere | PROPOSED |
-| Q3 | Where are products created? | Only in the Products component. Other screens (for example "+ Add product" on the Inventory screen) link to it or are removed | PROPOSED |
-| Q4 | Are "Suppliers" in scope? | Check the brief; it is not one of the seven components | OPEN |
-| Q5 | How does an order reduce stock without overselling? | One atomic update that succeeds only if enough stock remains: `updateOne({productId, warehouseId, quantity: {$gte: qty}}, {$inc: {quantity: -qty}})` | PROPOSED |
+| Q1 | Who owns the stock number: `products.stockQuantity` or Inventory's per-warehouse records? | **Products owns it.** `products.stockQuantity` is the stock available for sale; it is set and edited in the Products screen. Inventory's per-warehouse records only show where that stock is kept | **AGREED** |
+| Q2 | Is a SKU (for example `ZNY-2048` in the Inventory mock-up) a separate field? | No separate SKU. `productId` (`PRD-00007`) is the one product identifier shown everywhere | **AGREED** |
+| Q3 | Where are products created? | Only in the Products component. Other screens (for example "+ Add product" on the Inventory screen) link to it or are removed | **AGREED** |
+| Q4 | Are "Suppliers" in scope? | No. Suppliers is not one of the seven components, so no component builds it | **AGREED** |
+| Q5 | How does an order reduce stock without overselling? | One atomic update on the product that succeeds only if enough stock remains: `updateOne({_id: productId, stockQuantity: {$gte: qty}}, {$inc: {stockQuantity: -qty}})`; `matchedCount == 0` means "not enough stock". This is the only write another component may make to `products` | **AGREED** |
 
 ## 6. Change log
 
 | Date | Change | Agreed by |
 |---|---|---|
-| 2026-11-14 | First version: ID formats, collections, field rules, open questions | Farshad (proposal) |
-| 2026-11-20 | Final decision: everyone uses MongoDB Community Server installed locally (no Docker, no Atlas); `docker-compose.yml` removed | Group |
+| 2026-11-14 | First version: ID formats, collections, field rules, open questions | Farshad |
+| 2026-11-20 | Final decision: everyone uses MongoDB Community Server installed locally (no Docker, no Atlas); `docker-compose.yml` removed | Farshad |
+| 2026-11-20 | All IDs, collections and decisions (Q1 to Q5) are final: nothing is proposed any more | Farshad |
