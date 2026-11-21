@@ -108,14 +108,53 @@ mongosh --quiet --eval "db.runCommand({ping:1})"
 
 It listens on `localhost:27017` with no password (local development only). Use database `marketplace`.
 
-**Load the shared sample data** (first time, and whenever `seed-data/` changes; safe to repeat):
+## Step 7a. Load the shared sample data (the common seeder)
+
+Everyone tests with **exactly the same data** on their own laptop: 15 products **with their photos**, 8 customers, 10 orders, plus stock, shipments, payments and reviews (96 records). The IDs are fixed and every link matches, so for example `ORD-00004` belongs to `CUS-00004`, ships as `SHP-00004` and is paid by `TXN-00004` on every machine.
+The seed files (`seed-data/`) and the product photos are in the repository, so you do not download anything yourself.
+
+**Do this once, after Step 7 (MongoDB must be running):**
 
 ```bash
+# 1. Get the latest code
+git checkout staging
+git pull
+
+# 2. Go to the seeder
 cd tools/seeder
+
+# 3. Load everything
 mvn -q compile exec:java
 ```
 
-Then every collection in `marketplace` holds the same sample records as on everyone else's machine (look in MongoDB Compass if you installed it). Details: [SEED-DATA-GUIDE.md](SEED-DATA-GUIDE.md).
+You see a table with an `added` count for each collection, then `Product photos: 15 copied`. Running it again is safe: it only adds what is missing and never changes your own records.
+
+**In Eclipse instead of Maven:** File > Import > Maven > Existing Maven Projects > `tools/seeder`, then right-click `SeederMain.java` > **Run As > Java Application**.
+
+**Check it worked:**
+
+```bash
+mongosh marketplace --quiet --eval "db.products.countDocuments()"      # must print 15 (or more if you added your own)
+```
+
+To see the products with their photos, start the Products app: `cd components/products` then `mvn javafx:run` (or run `Launcher` in Eclipse).
+
+**Already have old test data, or products without photos?** Start fresh. This deletes the seeded collections in **your own** local database only (nobody else's) and asks you to type `yes`:
+
+```bash
+mvn -q compile exec:java -Dexec.args="--reset"
+# Windows PowerShell:  mvn -q compile exec:java "-Dexec.args=--reset"
+```
+
+The photos are copied into `components/products/data/images/` on your computer. That folder is git-ignored: never commit it.
+How to check or change the seed files, and every option: [SEED-DATA-GUIDE.md](SEED-DATA-GUIDE.md).
+
+| Message | Fix |
+|---|---|
+| `ERROR: cannot use MongoDB` | Start MongoDB (Step 7), then run the seeder again |
+| `different` is not 0 for products, or no photos in the app | You seeded before the photos existed: run it once with `--reset` (above) |
+| `mvn` is not recognised | Install Maven (Step 1) or use the Eclipse way above |
+| `cannot find the seed-data folder` | Run it from `tools/seeder` inside the repository |
 
 ## Step 8. Daily routine
 
@@ -168,6 +207,7 @@ Done on your own machine, never committed:
 | You committed to `main` by mistake (not pushed yet) | `git branch my-branch-name` then `git reset --hard origin/main`, then `git checkout my-branch-name` |
 | You committed a password | Tell the group straight away and change the password |
 | *Cannot reach MongoDB* | Start MongoDB Community Server (Windows: `net start MongoDB`; macOS: `brew services start mongodb-community`), then check with `mongosh --eval "db.runCommand({ping:1})"` |
+| Seed loaded but no product photos | See Step 7a: run the common seeder once with `--reset` |
 | *JavaFX runtime components are missing* | Run the `Launcher` class, not the `Application` class |
 | Eclipse: *release version 17 not supported* | Add a JDK 17+ in Installed JREs and select it for the project |
 | Permission denied when pushing | Accept the repository invitation, and sign in with the GitHub account that was invited |

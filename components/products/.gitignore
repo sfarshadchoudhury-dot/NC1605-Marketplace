@@ -1,0 +1,13 @@
+# Build output
+target/
+bin/
+
+# Local settings and uploaded images (never commit these)
+config/application.properties
+data/
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+.DS_Store

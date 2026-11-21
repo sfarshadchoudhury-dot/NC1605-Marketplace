@@ -2,7 +2,7 @@
 
 This is the contract between the seven components. They all use **one MongoDB database**, so every component must store and read data **exactly as written here**: the same collection names, field names, ID formats, types and status values. Class diagrams, flowcharts, code and seed data must all match it.
 
-**Status: FINAL.** Everything in this file is agreed (20 November 2026). Do not invent your own names or formats. If you really need a change (for example a new field), ask in the group chat first, then open a pull request that updates this file and add a line to the change log (section 9). Adding a new **optional** field to your own collection is fine; renaming or removing a field others read is not, unless the group agrees.
+**Status: FINAL.** Everything in this file is final (20 November 2026). It is maintained by the repository owner (Farshad), and **only the owner changes it** (see [CONTRIBUTING.md](../CONTRIBUTING.md), section 3). Do not invent your own names or formats. If you need a change (for example a new field), ask Farshad in the group chat. Adding a new **optional** field to your own collection is fine; renaming or removing a field others read is not.
 
 Contents:
 
@@ -93,7 +93,7 @@ Never store passwords as plain text. If your component needs a login, store only
 | `counters` | Shared: each component updates **only its own** counter document | One document per ID sequence |
 
 * **Only the owner writes** to a collection. Every component may **read** any collection.
-* There is **one exception**, so that an order can reserve stock safely: when an order is placed, **Orders** reduces `inventory.quantity` with the single atomic update in section 7 (decision D5). Nobody else writes to another component's collection.
+* There is **one exception**, so that an order can reserve stock safely: when an order is placed, **Orders** reduces `products.stockQuantity` with the single atomic update in section 7 (decision D5). Nobody else writes to another component's collection.
 * If you need another component's data changed (for example "mark this order as SHIPPED"), the **owner** provides a method or does it in its own screen. Agree it in the group chat.
 
 ### 3.3 The shared `counters` collection
@@ -140,7 +140,7 @@ Other components point at your records, so a delete can leave broken links.
 | `name` | String | yes | 1–100 characters |
 | `description` | String | yes | May be `""` |
 | `price` | Decimal128 | yes | Current selling price, > 0 |
-| `stockQuantity` | int | yes | Total stock across all warehouses (see decision D1) |
+| `stockQuantity` | int | yes | Stock available for sale. **Owned and edited by Products** (decision D1); never negative |
 | `active` | boolean | yes | `false` = not for sale (hidden from customers, cannot be ordered) |
 | `categories` | array of String | yes | For example `["Electronics", "Audio"]`; may be empty |
 | `imagePaths` | array of String | yes | Paths to image files on the Products user's machine; may be empty |
@@ -327,20 +327,19 @@ These were the open questions in the first draft. They are now decided.
 
 | # | Question | Decision |
 |---|---|---|
-| D1 | Who owns the stock number? | **Inventory** is the source of truth (`inventory`, per warehouse). `products.stockQuantity` must equal the total of `inventory.quantity` for that product. Products keeps showing it; when Inventory is ready, Products switches to reading the total from `inventory`. The seed data already matches. |
+| D1 | Who owns the stock number? | **Products owns it.** `products.stockQuantity` is the stock available for sale; it is set and edited in the Products screen. Inventory's per-warehouse records (`inventory`) show *where* that stock is kept, and their `quantity` values for a product add up to its `stockQuantity`. Inventory keeps its own records in line (for example when a shipment leaves a warehouse). The seed data already matches. |
 | D2 | Is a SKU a separate field? | **No.** `productId` (`PRD-00007`) is the one product identifier, shown everywhere. |
 | D3 | Where are products created? | **Only in the Products component.** Other screens link to it or show products read-only. |
 | D4 | Are "Suppliers" in scope? | **No.** They are not one of the seven components. Do not add a suppliers collection. |
-| D5 | How does an order reduce stock without overselling? | One atomic update that only succeeds if enough stock remains. If it changes 0 documents, there is not enough stock: show an error and do not place the order. |
+| D5 | How does an order reduce stock without overselling? | One atomic update on the product's `stockQuantity` that only succeeds if enough stock remains. If it changes 0 documents, there is not enough stock: show an error and do not place the order. This is the only write another component may make to `products`. |
 
-D5 in Java (Orders, for each order line, from the order's warehouse):
+D5 in Java (Orders, for each order line):
 
 ```java
-UpdateResult result = inventory.updateOne(
-        Filters.and(Filters.eq("productId", productId),
-                    Filters.eq("warehouseId", warehouseId),
-                    Filters.gte("quantity", qty)),
-        Updates.combine(Updates.inc("quantity", -qty),
+UpdateResult result = products.updateOne(
+        Filters.and(Filters.eq("_id", productId),
+                    Filters.gte("stockQuantity", qty)),
+        Updates.combine(Updates.inc("stockQuantity", -qty),
                         Updates.set("updatedAt", new Date())));
 if (result.getModifiedCount() == 0) {
     // not enough stock: stop and tell the user
@@ -357,6 +356,7 @@ How to load it, check it, and add your own records: **[SEED-DATA-GUIDE.md](SEED-
 
 | Date | Change | Agreed by |
 |---|---|---|
-| 2026-11-14 | First version: ID formats, collections, field rules, open questions | Farshad (proposal) |
-| 2026-11-20 | Final decision: everyone uses MongoDB Community Server installed locally (no Docker, no Atlas); `docker-compose.yml` removed | Group |
-| 2026-11-20 | **Version 1.0, FINAL.** All IDs and collections agreed; full schema for every collection; status values; decisions D1–D5; delete rules; shared seed data and seeder | Farshad (component lead) |
+| 2026-11-14 | First version: ID formats, collections, field rules, open questions | Farshad |
+| 2026-11-20 | Final decision: everyone uses MongoDB Community Server installed locally (no Docker, no Atlas); `docker-compose.yml` removed | Farshad |
+| 2026-11-20 | **Version 1.0, FINAL.** All IDs and collections agreed; full schema for every collection; status values; decisions D1–D5; delete rules; shared seed data and seeder | Farshad |
+| 2026-11-21 | D1 and D5: Products owns `stockQuantity`; Orders reserves stock on `products`. Only the owner (Farshad) changes this file. Sample products come with photos | Farshad |

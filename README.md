@@ -97,6 +97,8 @@ Each component is its **own Maven project** inside `components/<name>/`, so each
 
 MongoDB then listens on `localhost:27017` with no password (local development only), which is the default every component uses.
 
+**Sample products:** everyone loads the same 15 products with the same photos (PRD-00001 to PRD-00015). See [Team Guide, Step 7a](docs/TEAM-GUIDE.md#step-7a-load-the-sample-products-seed).
+
 All components use database **`marketplace`** with one or more collections each. See [SHARED-CONVENTIONS.md](docs/SHARED-CONVENTIONS.md#3-mongodb).
 
 ### Shared sample data
