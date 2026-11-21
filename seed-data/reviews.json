@@ -1,0 +1,106 @@
+[
+  {
+    "_id": "REV-00001",
+    "productId": "PRD-00001",
+    "customerId": "CUS-00001",
+    "orderId": "ORD-00001",
+    "rating": 5,
+    "title": "Brilliant noise cancelling",
+    "comment": "Blocks out the train completely and the battery lasts all week.",
+    "visible": true,
+    "createdAt": {
+      "$date": "2026-10-21T10:00:00Z"
+    }
+  },
+  {
+    "_id": "REV-00002",
+    "productId": "PRD-00015",
+    "customerId": "CUS-00001",
+    "orderId": "ORD-00001",
+    "rating": 4,
+    "title": "Does the job",
+    "comment": "Charges my laptop quickly. A bit stiff when new.",
+    "visible": true,
+    "createdAt": {
+      "$date": "2026-10-21T11:00:00Z"
+    }
+  },
+  {
+    "_id": "REV-00003",
+    "productId": "PRD-00003",
+    "customerId": "CUS-00002",
+    "orderId": "ORD-00002",
+    "rating": 5,
+    "title": "Lovely to type on",
+    "comment": "Switches feel great and swapping them was easy.",
+    "visible": true,
+    "createdAt": {
+      "$date": "2026-10-21T12:00:00Z"
+    }
+  },
+  {
+    "_id": "REV-00004",
+    "productId": "PRD-00006",
+    "customerId": "CUS-00003",
+    "orderId": "ORD-00003",
+    "rating": 3,
+    "title": "Fine for the price",
+    "comment": "Comfortable, but it shrank slightly after the first wash.",
+    "visible": true,
+    "createdAt": {
+      "$date": "2026-10-21T13:00:00Z"
+    }
+  },
+  {
+    "_id": "REV-00005",
+    "productId": "PRD-00004",
+    "customerId": "CUS-00003",
+    "orderId": "ORD-00003",
+    "rating": 5,
+    "title": "Makes great coffee",
+    "comment": "Beautiful glaze and a really clean cup.",
+    "visible": true,
+    "createdAt": {
+      "$date": "2026-10-21T14:00:00Z"
+    }
+  },
+  {
+    "_id": "REV-00006",
+    "productId": "PRD-00001",
+    "customerId": "CUS-00003",
+    "orderId": "ORD-00010",
+    "rating": 4,
+    "title": "Very good",
+    "comment": "Great sound. The ear cushions get warm after a few hours.",
+    "visible": true,
+    "createdAt": {
+      "$date": "2026-10-21T15:00:00Z"
+    }
+  },
+  {
+    "_id": "REV-00007",
+    "productId": "PRD-00008",
+    "customerId": "CUS-00003",
+    "orderId": "ORD-00010",
+    "rating": 2,
+    "title": "Too basic for me",
+    "comment": "Good for complete beginners, but I already knew most of it.",
+    "visible": true,
+    "createdAt": {
+      "$date": "2026-10-21T16:00:00Z"
+    }
+  },
+  {
+    "_id": "REV-00008",
+    "productId": "PRD-00003",
+    "customerId": "CUS-00003",
+    "orderId": null,
+    "rating": 1,
+    "title": "Spam",
+    "comment": "Visit my website for cheap keyboards!!!",
+    "visible": false,
+    "createdAt": {
+      "$date": "2026-10-22T09:00:00Z"
+    }
+  }
+]

@@ -22,14 +22,15 @@ If you disagree with a rule, raise it in the group chat. Do not just ignore it.
 
 1. Your code goes **only** in `components/<your-component>/`.
 2. Do **not** edit another component's folder. If you need a change there, ask the owner in the group chat or open an issue.
-3. Shared files (`README.md`, `CONTRIBUTING.md`, `docs/`, `.gitignore`) are changed **only by pull request**, and the PR description must say what changed and why.
+3. Shared files (`README.md`, `CONTRIBUTING.md`, `docs/`, `tools/`, `.gitignore`) are changed **only by pull request**, and the PR description must say what changed and why.
    The one exception: you may edit **your own row** of the team table in `README.md`.
+4. In `seed-data/`, edit **only your own collection's file** (for example Orders edits `orders.json`). Run the seeder's `--check` before opening the pull request. See [docs/SEED-DATA-GUIDE.md](docs/SEED-DATA-GUIDE.md).
 
 ## 3. Shared names and IDs
 
 1. The names in [docs/SHARED-CONVENTIONS.md](docs/SHARED-CONVENTIONS.md) (`productId`, `customerId`, `orderId`, `warehouseId`, collection names, ID formats) must be used **exactly as written**: same spelling, same capital letters, same type.
 2. The shared names are **final**. Only the repository owner (Farshad) changes `SHARED-CONVENTIONS.md`; if you need a new shared name, ask him in the group chat. Nobody renames a shared name on their own.
-3. Never write into another component's MongoDB collection. You may **read** it. If you need something changed there, ask the owner to provide a method. The only exception is the stock update in `SHARED-CONVENTIONS.md` Q5.
+3. Never write into another component's MongoDB collection. You may **read** it. If you need something changed there, ask the owner to provide a method. The only exception is the stock update in `SHARED-CONVENTIONS.md`, decision D5.
 
 ## 4. Commits
 

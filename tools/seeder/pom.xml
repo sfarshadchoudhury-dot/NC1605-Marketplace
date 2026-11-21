@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.marketplace</groupId>
+    <artifactId>shared-seeder</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+    <name>Marketplace - Shared Seeder</name>
+    <description>Checks the shared seed-data/*.json files and loads them into the local "marketplace" MongoDB database</description>
+
+    <properties>
+        <!-- Same versions as every component (CONTRIBUTING.md, section 7). -->
+        <maven.compiler.release>17</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <mongodb.driver.version>5.14.0</mongodb.driver.version>
+        <slf4j.version>2.0.20</slf4j.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>${mongodb.driver.version}</version>
+        </dependency>
+
+        <!-- Switches the driver's own logging off so the seeder's output stays readable. -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.15.0</version>
+            </plugin>
+
+            <!--
+              mvn -q compile exec:java                          load missing seed records (safe to repeat)
+              mvn -q compile exec:java -Dexec.args="--check"    only check the JSON files (no MongoDB needed)
+              mvn -q compile exec:java -Dexec.args="--reset"    wipe the seeded collections, then load everything
+              mvn -q compile exec:java -Dexec.args="--help"     all options
+            -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.6.4</version>
+                <configuration>
+                    <mainClass>com.marketplace.seeder.SeederMain</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -1,0 +1,156 @@
+[
+  {
+    "_id": "TXN-00001",
+    "orderId": "ORD-00001",
+    "customerId": "CUS-00001",
+    "type": "PAYMENT",
+    "amount": {
+      "$numberDecimal": "149.97"
+    },
+    "method": "CARD",
+    "status": "COMPLETED",
+    "createdAt": {
+      "$date": "2026-10-04T20:01:00Z"
+    }
+  },
+  {
+    "_id": "TXN-00002",
+    "orderId": "ORD-00002",
+    "customerId": "CUS-00002",
+    "type": "PAYMENT",
+    "amount": {
+      "$numberDecimal": "89.00"
+    },
+    "method": "PAYPAL",
+    "status": "COMPLETED",
+    "createdAt": {
+      "$date": "2026-10-05T21:01:00Z"
+    }
+  },
+  {
+    "_id": "TXN-00003",
+    "orderId": "ORD-00003",
+    "customerId": "CUS-00003",
+    "type": "PAYMENT",
+    "amount": {
+      "$numberDecimal": "76.95"
+    },
+    "method": "CARD",
+    "status": "COMPLETED",
+    "createdAt": {
+      "$date": "2026-10-06T22:01:00Z"
+    }
+  },
+  {
+    "_id": "TXN-00004",
+    "orderId": "ORD-00004",
+    "customerId": "CUS-00004",
+    "type": "PAYMENT",
+    "amount": {
+      "$numberDecimal": "29.99"
+    },
+    "method": "CARD",
+    "status": "COMPLETED",
+    "createdAt": {
+      "$date": "2026-10-11T23:01:00Z"
+    }
+  },
+  {
+    "_id": "TXN-00005",
+    "orderId": "ORD-00005",
+    "customerId": "CUS-00005",
+    "type": "PAYMENT",
+    "amount": {
+      "$numberDecimal": "59.97"
+    },
+    "method": "PAYPAL",
+    "status": "COMPLETED",
+    "createdAt": {
+      "$date": "2026-10-13T00:01:00Z"
+    }
+  },
+  {
+    "_id": "TXN-00006",
+    "orderId": "ORD-00006",
+    "customerId": "CUS-00006",
+    "type": "PAYMENT",
+    "amount": {
+      "$numberDecimal": "39.90"
+    },
+    "method": "CARD",
+    "status": "COMPLETED",
+    "createdAt": {
+      "$date": "2026-10-16T01:01:00Z"
+    }
+  },
+  {
+    "_id": "TXN-00007",
+    "orderId": "ORD-00007",
+    "customerId": "CUS-00001",
+    "type": "PAYMENT",
+    "amount": {
+      "$numberDecimal": "141.00"
+    },
+    "method": "BANK_TRANSFER",
+    "status": "COMPLETED",
+    "createdAt": {
+      "$date": "2026-10-17T02:01:00Z"
+    }
+  },
+  {
+    "_id": "TXN-00008",
+    "orderId": "ORD-00008",
+    "customerId": "CUS-00007",
+    "type": "PAYMENT",
+    "amount": {
+      "$numberDecimal": "49.50"
+    },
+    "method": "CARD",
+    "status": "FAILED",
+    "createdAt": {
+      "$date": "2026-10-18T03:01:00Z"
+    }
+  },
+  {
+    "_id": "TXN-00009",
+    "orderId": "ORD-00009",
+    "customerId": "CUS-00002",
+    "type": "PAYMENT",
+    "amount": {
+      "$numberDecimal": "14.00"
+    },
+    "method": "CARD",
+    "status": "COMPLETED",
+    "createdAt": {
+      "$date": "2026-10-10T04:01:00Z"
+    }
+  },
+  {
+    "_id": "TXN-00010",
+    "orderId": "ORD-00009",
+    "customerId": "CUS-00002",
+    "type": "REFUND",
+    "amount": {
+      "$numberDecimal": "14.00"
+    },
+    "method": "CARD",
+    "status": "COMPLETED",
+    "createdAt": {
+      "$date": "2026-10-11T04:00:00Z"
+    }
+  },
+  {
+    "_id": "TXN-00011",
+    "orderId": "ORD-00010",
+    "customerId": "CUS-00003",
+    "type": "PAYMENT",
+    "amount": {
+      "$numberDecimal": "189.97"
+    },
+    "method": "CARD",
+    "status": "COMPLETED",
+    "createdAt": {
+      "$date": "2026-10-08T05:01:00Z"
+    }
+  }
+]
