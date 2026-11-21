@@ -1,6 +1,6 @@
 # Shared Seeder
 
-Checks `seed-data/*.json` against [docs/SHARED-CONVENTIONS.md](../../docs/SHARED-CONVENTIONS.md) and loads it into your local MongoDB database `marketplace`.
+Checks `seed-data/*.json` against [docs/SHARED-CONVENTIONS.md](../../docs/SHARED-CONVENTIONS.md) and loads it into your local MongoDB database `marketplace`. It also copies the 15 sample product photos into `components/products/data/images/`, where the Products app shows them.
 
 ```bash
 cd tools/seeder
@@ -18,3 +18,4 @@ Full guide (rules, output, how to change your component's data): **[docs/SEED-DA
 | `CollectionRules` | SHARED-CONVENTIONS section 4 written as data: ID formats, fields, types, allowed values, links. **Update it whenever the conventions change.** |
 | `SeedChecker` | Finds every rule break (wrong ID, missing field, broken link, wrong total...) before anything is written |
 | `MongoSeeder` | Adds missing documents, moves the ID counters past the seed IDs, creates the shared indexes |
+| `ProductPhotos` | Checks that every product photo is in the repository and copies the photos to the Products data folder |

@@ -208,7 +208,7 @@ All components can share the same MongoDB database (default `marketplace`) with 
 
 ## 7. Stock and the Inventory component
 
-**Decision (final, `SHARED-CONVENTIONS.md` Q1): Products owns the stock number.** `Product.stockQuantity` (validated as a non-negative integer) is the stock available for sale and is edited in the Products screen. The Inventory component keeps per-warehouse records that only show where that stock is kept. The options that were considered:
+**Decision (final, `SHARED-CONVENTIONS.md` decision D1): Products owns the stock number.** `Product.stockQuantity` (validated as a non-negative integer) is the stock available for sale and is edited in the Products screen. The Inventory component keeps per-warehouse records that only show where that stock is kept. The options that were considered:
 
 | Option | How | Pros / cons |
 |---|---|---|
@@ -216,7 +216,7 @@ All components can share the same MongoDB database (default `marketplace`) with 
 | **B. Inventory is the source of truth** | Inventory sums its warehouse quantities per `productId` and writes the total into `Product.stockQuantity` (a new `ProductService` method such as `updateStockQuantity(productId, total)`); the stock box in the form becomes read-only | One truth; needs Inventory to exist first |
 | **C. Reconcile** | Keep both and add a report listing products where `stockQuantity` differs from the warehouse total (the brief's optional "highlight discrepancies") | Safe while both are still being built |
 
-Orders reduce stock (Q5) without "read, subtract, write": two orders at once could oversell. Use one atomic MongoDB update that only succeeds if enough stock remains, for example
+Orders reduce stock (decision D5) without "read, subtract, write": two orders at once could oversell. Use one atomic MongoDB update that only succeeds if enough stock remains, for example
 `updateOne({ _id: id, stockQuantity: { $gte: qty } }, { $inc: { stockQuantity: -qty } })` and treat a result of `matchedCount == 0` as "insufficient stock".
 (This update is made by the Orders component; it is the only write another component makes to `products`.)
 

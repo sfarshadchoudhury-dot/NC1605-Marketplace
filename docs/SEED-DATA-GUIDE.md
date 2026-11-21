@@ -77,8 +77,8 @@ customers           8          0          0   CUS-00009
 | File | Records | Owner (who edits it) | What it covers |
 |---|---|---|---|
 | `warehouses.json` | 3 | Inventory | `WHS-001` London, `WHS-002` Birmingham, `WHS-003` Manchester |
-| `products.json` | 15 | Products | The same 15 products as the Products app's own samples. Two are inactive (`PRD-00009`, `PRD-00014`); two are out of stock (`PRD-00005`, `PRD-00009`); some are low stock |
-| `inventory.json` | 33 | Inventory | Stock per product per warehouse. The totals equal `products.stockQuantity` (decision D1) |
+| `products.json` | 15 | Products | The same 15 products as the Products app's own samples, each with its photo (see below). Two are inactive (`PRD-00009`, `PRD-00014`); two are out of stock (`PRD-00005`, `PRD-00009`); some are low stock |
+| `inventory.json` | 33 | Inventory | Where each product's stock is kept, per warehouse. The quantities for a product add up to its `products.stockQuantity`, which Products owns (decision D1) |
 | `customers.json` | 8 | Customers | UK addresses, `@example.com` e-mails; `CUS-00008` is inactive |
 | `orders.json` | 10 | Orders | Every status: 4 `DELIVERED`, 2 `SHIPPED`, 2 `PAID`, 1 `PENDING`, 1 `CANCELLED`; orders with one and several lines |
 | `shipments.json` | 8 | Delivery | One per paid order: `PREPARING`, `IN_TRANSIT`, `DELIVERED` |
@@ -86,6 +86,8 @@ customers           8          0          0   CUS-00009
 | `reviews.json` | 8 | Reviews | Ratings 1–5 on delivered orders ("verified purchase"), plus one hidden (`visible: false`) spam review |
 
 The story fits together: each shipment and payment belongs to the right order, each review was written by the customer who received that product, and order totals add up. The checker enforces this, so keep it that way when you add records.
+
+**Product photos.** Each product has one image path such as `images/sample-yoga-mat-6-mm.jpg`. The photo itself is kept in `components/products/src/main/resources/com/marketplace/products/sample-images/yoga-mat-6-mm.jpg`. When the seeder loads products it also copies every photo into `components/products/data/images/` (or `PRODUCTS_DATA_DIR/images` if you set that), which is where the Products app shows images from. The seeder stops with an error if a photo is missing. To change a photo, replace that JPG; to add a product with a photo, add `images/sample-<product-name>.jpg` to its `imagePaths` and the JPG to that folder.
 
 ## 5. Rules for seed data
 
@@ -147,6 +149,7 @@ The story fits together: each shipment and payment belongs to the right order, e
 | `is not valid JSON` | A missing comma, quote or bracket in that file. The message gives the position. Paste the file into a JSON validator if needed. |
 | `must be money written as {"$numberDecimal": ...}` | You wrote a plain number. See rule 3 in section 5. |
 | `does not exist in customers.json` (or another file) | The ID you point to is not in that seed file. Use an existing ID or ask the owner to add one. |
+| Products in the Products app show "Image unavailable" | Run the seeder from `tools/seeder` (it prints `Product photos: ... copied`). If you seeded before the photos existed, run once with `--reset --only products`. |
 | Many `different` in the table | Your database has your own edits. Run with `--reset` (and `--only ...`) to get the shared data back. |
 | `Could not create an index on customers` | Your database has two customers with the same e-mail (made in your app). Fix them, or `--reset --only customers`. |
 | Maven: `Could not resolve dependencies` | The first run needs internet to download the MongoDB driver. |

@@ -73,7 +73,12 @@ public final class SeederMain {
         // 2. Check them. Nothing is written if there is any error.
         SeedChecker checker = SeedChecker.check(files);
         printCheckResult(files, checker);
-        if (!checker.errors().isEmpty()) {
+        // The product photos must be in the repository too (see ProductPhotos).
+        ProductPhotos photos = ProductPhotos.forRepository(folder.toAbsolutePath().normalize().getParent(),
+                System.getenv("PRODUCTS_DATA_DIR"));
+        List<String> photoErrors = photos.check(files.documentsOf("products"));
+        photoErrors.forEach(error -> System.out.println("ERROR: " + error));
+        if (!checker.errors().isEmpty() || !photoErrors.isEmpty()) {
             System.out.println();
             System.out.println("Nothing was written to MongoDB. Fix the errors above, then run the seeder again.");
             return 1;
@@ -111,7 +116,12 @@ public final class SeederMain {
                 System.out.println("Reset cancelled. Nothing was changed.");
                 return 0;
             }
-            return load(new MongoSeeder(database), files, collections, options.reset);
+            int result = load(new MongoSeeder(database), files, collections, options.reset);
+            if (result == 0 && collections.contains("products")) {
+                copyPhotos(photos, files);
+            }
+            System.out.println("Done.");
+            return result;
         } catch (MongoException e) {
             System.out.println();
             System.out.println("ERROR: cannot use MongoDB at " + hidePassword(uri) + ".");
@@ -149,8 +159,19 @@ public final class SeederMain {
             System.out.println("To get exactly the shared data, run again with --reset.");
             System.out.println();
         }
-        System.out.println("Done.");
         return 0;
+    }
+
+    /** Copies the sample product photos to where the Products app looks for them. */
+    private static void copyPhotos(ProductPhotos photos, SeedFiles files) {
+        try {
+            ProductPhotos.CopyResult copied = photos.copy(files.documentsOf("products"));
+            System.out.println("Product photos: " + copied.copied() + " copied, " + copied.alreadyThere()
+                    + " already there  ->  " + copied.imagesFolder().toAbsolutePath().normalize());
+        } catch (java.io.IOException e) {
+            System.out.println("WARNING: could not copy the product photos: " + e.getMessage());
+            System.out.println("  The products are loaded; the Products app will show \"Image unavailable\".");
+        }
     }
 
     // ------------------------------------------------------------------ output

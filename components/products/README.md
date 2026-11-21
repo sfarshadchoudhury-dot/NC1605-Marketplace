@@ -131,7 +131,7 @@ They disappear on JDK 17 or 21.
 
 ## 6. Loading sample data (the seed command)
 
-> **Team members:** the short step-by-step version is in the [Team Guide, Step 7a](../../docs/TEAM-GUIDE.md#step-7a-load-the-sample-products-seed).
+> **Team members: use the common seeder** in `tools/seeder` ([Team Guide, Step 7a](../../docs/TEAM-GUIDE.md#step-7a-load-the-shared-sample-data-the-common-seeder)). It loads these same 15 products, with the same IDs and photos, together with everyone else's sample data. The command below only loads the Products samples and is kept for working on this component on its own.
 
 Nothing is seeded automatically. To load the 15 sample products, each with its product photo:
 

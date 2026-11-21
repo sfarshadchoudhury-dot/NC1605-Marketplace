@@ -12,7 +12,7 @@
       "Electronics",
       "Audio"
     ],
-    "imagePaths": [],
+    "imagePaths": ["images/sample-wireless-noise-cancelling-headphones.jpg"],
     "createdAt": {
       "$date": "2026-10-01T10:00:00Z"
     },
@@ -33,7 +33,7 @@
       "Electronics",
       "Audio"
     ],
-    "imagePaths": [],
+    "imagePaths": ["images/sample-bluetooth-portable-speaker.jpg"],
     "createdAt": {
       "$date": "2026-10-01T11:00:00Z"
     },
@@ -54,7 +54,7 @@
       "Electronics",
       "Office"
     ],
-    "imagePaths": [],
+    "imagePaths": ["images/sample-mechanical-keyboard.jpg"],
     "createdAt": {
       "$date": "2026-10-01T12:00:00Z"
     },
@@ -74,7 +74,7 @@
     "categories": [
       "Home & Kitchen"
     ],
-    "imagePaths": [],
+    "imagePaths": ["images/sample-ceramic-pour-over-coffee-set.jpg"],
     "createdAt": {
       "$date": "2026-10-01T13:00:00Z"
     },
@@ -95,7 +95,7 @@
       "Home & Kitchen",
       "Sports & Outdoors"
     ],
-    "imagePaths": [],
+    "imagePaths": ["images/sample-stainless-steel-water-bottle-750-ml.jpg"],
     "createdAt": {
       "$date": "2026-10-01T14:00:00Z"
     },
@@ -115,7 +115,7 @@
     "categories": [
       "Clothing"
     ],
-    "imagePaths": [],
+    "imagePaths": ["images/sample-cotton-crew-neck-t-shirt.jpg"],
     "createdAt": {
       "$date": "2026-10-01T15:00:00Z"
     },
@@ -136,7 +136,7 @@
       "Clothing",
       "Sports & Outdoors"
     ],
-    "imagePaths": [],
+    "imagePaths": ["images/sample-waterproof-hiking-jacket.jpg"],
     "createdAt": {
       "$date": "2026-10-01T16:00:00Z"
     },
@@ -156,7 +156,7 @@
     "categories": [
       "Books"
     ],
-    "imagePaths": [],
+    "imagePaths": ["images/sample-beginner-s-guide-to-java-programming.jpg"],
     "createdAt": {
       "$date": "2026-10-01T17:00:00Z"
     },
@@ -176,7 +176,7 @@
     "categories": [
       "Books"
     ],
-    "imagePaths": [],
+    "imagePaths": ["images/sample-science-fiction-paperback-collection.jpg"],
     "createdAt": {
       "$date": "2026-10-01T18:00:00Z"
     },
@@ -196,7 +196,7 @@
     "categories": [
       "Toys & Games"
     ],
-    "imagePaths": [],
+    "imagePaths": ["images/sample-wooden-building-blocks-100-pieces.jpg"],
     "createdAt": {
       "$date": "2026-10-01T19:00:00Z"
     },
@@ -217,7 +217,7 @@
       "Sports & Outdoors",
       "Fitness"
     ],
-    "imagePaths": [],
+    "imagePaths": ["images/sample-yoga-mat-6-mm.jpg"],
     "createdAt": {
       "$date": "2026-10-01T20:00:00Z"
     },
@@ -237,7 +237,7 @@
     "categories": [
       "Beauty"
     ],
-    "imagePaths": [],
+    "imagePaths": ["images/sample-vitamin-c-face-serum.jpg"],
     "createdAt": {
       "$date": "2026-10-01T21:00:00Z"
     },
@@ -258,7 +258,7 @@
       "Home & Kitchen",
       "Office"
     ],
-    "imagePaths": [],
+    "imagePaths": ["images/sample-ergonomic-desk-lamp.jpg"],
     "createdAt": {
       "$date": "2026-10-01T22:00:00Z"
     },
@@ -279,7 +279,7 @@
       "Office",
       "Home & Kitchen"
     ],
-    "imagePaths": [],
+    "imagePaths": ["images/sample-standing-desk-converter.jpg"],
     "createdAt": {
       "$date": "2026-10-01T23:00:00Z"
     },
@@ -300,7 +300,7 @@
       "Electronics",
       "Accessories"
     ],
-    "imagePaths": [],
+    "imagePaths": ["images/sample-usb-c-charging-cable-2-m.jpg"],
     "createdAt": {
       "$date": "2026-10-02T00:00:00Z"
     },
