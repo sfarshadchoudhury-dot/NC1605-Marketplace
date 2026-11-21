@@ -131,7 +131,7 @@ They disappear on JDK 17 or 21.
 
 ## 6. Loading sample data (the seed command)
 
-Nothing is seeded automatically. To load about 15 varied sample products (with locally generated placeholder pictures):
+Nothing is seeded automatically. To load the 15 sample products, each with its product photo:
 
 ```bash
 mvn compile exec:java@seed
@@ -142,7 +142,16 @@ or in Eclipse: run **`SeedMain`** (`src/main/java/com/marketplace/products/SeedM
 * It never overwrites anything: a sample whose name already exists is **skipped**.
 * Running it again adds **0** products ("skipped 15 that already existed").
 * If a sample was deleted, the next run adds just that one back.
-* The samples include inactive, out-of-stock, low-stock, multi-category, multi-image and no-image products so every UI state can be demonstrated.
+* The samples include inactive, out-of-stock, low-stock and multi-category products so every UI state can be demonstrated.
+
+**Product photos are part of the project**, in `src/main/resources/com/marketplace/products/sample-images/`, named after the product (for example `yoga-mat-6-mm.jpg`). Whoever runs the seed command gets exactly the same photos; they are copied into their own `data/images` folder. To change a sample's photo, replace that JPG and commit it. If a photo is missing, the seeder draws a simple placeholder instead.
+
+**Already seeded before the photos were added?** The seed command never changes existing products, so clear the sample data once and seed again (this deletes **all** products and restarts the IDs at PRD-00001):
+
+```bash
+mongosh marketplace --eval "db.products.drop(); db.counters.deleteOne({_id: 'products'})"
+mvn compile exec:java@seed
+```
 
 If MongoDB is unreachable it prints `SEED FAILED: Cannot reach MongoDB ...` and exits with code 1.
 

@@ -4,9 +4,11 @@ import com.marketplace.products.model.Product;
 import com.marketplace.products.model.ProductForm;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -18,6 +20,11 @@ import java.util.stream.Stream;
 /**
  * Adds about 15 varied sample products. It is only run by the explicit seed command (SeedMain).
  * Safe to run again: a sample whose name already exists is skipped, so nothing is overwritten or duplicated.
+ *
+ * Each sample's photo is stored in the project itself (src/main/resources/.../sample-images/), so every team
+ * member who runs the seed command gets exactly the same pictures. The file name is the product name in
+ * lower case with dashes, e.g. "Yoga Mat 6 mm" -> sample-images/yoga-mat-6-mm.jpg. If a photo is missing,
+ * simple placeholder pictures are drawn instead.
  */
 public class SampleDataSeeder {
 
@@ -30,6 +37,7 @@ public class SampleDataSeeder {
     }
 
     private static final String[] VIEW_CAPTIONS = {"Front view", "Side view", "Detail view"};
+    private static final String PHOTO_FOLDER = "/com/marketplace/products/sample-images/";
 
     private static final SampleProduct[] SAMPLES = {
             new SampleProduct("Wireless Noise-Cancelling Headphones",
@@ -123,7 +131,11 @@ public class SampleDataSeeder {
     private void addSample(SampleProduct sample, int sampleIndex, Path tempDir) throws IOException {
         List<String> imagePaths = new ArrayList<>();
         try {
-            for (int n = 0; n < sample.imageCount(); n++) {
+            Path photo = copyPhotoToTemp(sample.name(), tempDir);
+            if (photo != null) {
+                imagePaths.add(imageStorage.storeImage(photo));
+            }
+            for (int n = 0; photo == null && n < sample.imageCount(); n++) {
                 Path file = PlaceholderImageGenerator.generate(tempDir, "sample-" + sampleIndex + "-" + n + ".png",
                         sample.name(), VIEW_CAPTIONS[n % VIEW_CAPTIONS.length], sampleIndex + n);
                 imagePaths.add(imageStorage.storeImage(file));
@@ -137,6 +149,33 @@ public class SampleDataSeeder {
                 imageStorage.deleteImage(imagePath);
             }
             throw e;
+        }
+    }
+
+    /** Where the photo of a sample is kept inside the project, e.g. "Yoga Mat 6 mm" -> .../yoga-mat-6-mm.jpg. */
+    public static String photoResource(String productName) {
+        String slug = productName.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9]+", "-").replaceAll("(^-|-$)", "");
+        return PHOTO_FOLDER + slug + ".jpg";
+    }
+
+    /** Names of all sample products (used by the tests to check every photo is present). */
+    public static List<String> sampleNames() {
+        List<String> names = new ArrayList<>();
+        for (SampleProduct sample : SAMPLES) {
+            names.add(sample.name());
+        }
+        return names;
+    }
+
+    /** Copies the sample's photo out of the project resources into the temp folder, or returns null if there is none. */
+    private static Path copyPhotoToTemp(String productName, Path tempDir) throws IOException {
+        try (InputStream in = SampleDataSeeder.class.getResourceAsStream(photoResource(productName))) {
+            if (in == null) {
+                return null;
+            }
+            Path file = tempDir.resolve("photo-" + Math.abs(productName.hashCode()) + ".jpg");
+            Files.copy(in, file, StandardCopyOption.REPLACE_EXISTING);
+            return file;
         }
     }
 

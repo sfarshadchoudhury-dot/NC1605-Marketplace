@@ -53,7 +53,7 @@ How to read the columns
 | R27 | No dependence on original absolute paths; portable relative references | Stored as `images/<uuid>.<ext>`; `ImageStorageService.resolve` | Yes | `ImageStorageServiceTest.referenceIsRelativeAndPortable`, `movingTheWholeDataFolderKeepsReferencesWorking` | M-21 | |
 | R28 | Validate supported formats and file sizes | `ImageStorageService` (extension list, 5 MB limit, file signature check) | Yes | `ImageStorageServiceTest` (28 tests: types, empty, oversized, renamed text file, case) | M-15, M-16, M-17 | |
 | R29 | Handle missing or invalid images gracefully | `ProductImageLoader` ("No image" / "Image unavailable" placeholder) | Yes | n/a (manual test) | M-22 | |
-| R30 | A few locally generated placeholder images for sample products | `PlaceholderImageGenerator` (Java2D, no downloads), used by `SampleDataSeeder` | Yes | `SampleDataSeederTest` | M-02 | |
+| R30 | Images for the sample products | Product photos stored in the project (`src/main/resources/.../sample-images/`) and copied by `SampleDataSeeder`; `PlaceholderImageGenerator` draws a picture if a photo is missing | Yes | `SampleDataSeederTest` | M-02 | |
 
 ## D. User interface
 

@@ -663,7 +663,7 @@ flowchart TD
     E -- No --> J["delete temp folder, return SeedResult added skipped"]
     E -- Yes --> F{"existingNames contains SAMPLES at i name?"}
     F -- Yes --> G["skipped = skipped plus 1"]
-    F -- No --> H["addSample: generate placeholder PNGs, storeImage each, productService.addProduct"]
+    F -- No --> H["addSample: copy the sample photo from sample-images (or draw a placeholder if missing), storeImage, productService.addProduct"]
     H --> I["added = added plus 1"]
     G --> K["i = i plus 1"]
     I --> K
