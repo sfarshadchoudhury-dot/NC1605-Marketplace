@@ -131,6 +131,8 @@ They disappear on JDK 17 or 21.
 
 ## 6. Loading sample data (the seed command)
 
+> **Team members:** the short step-by-step version is in the [Team Guide, Step 7a](../../docs/TEAM-GUIDE.md#step-7a-load-the-sample-products-seed).
+
 Nothing is seeded automatically. To load the 15 sample products, each with its product photo:
 
 ```bash
