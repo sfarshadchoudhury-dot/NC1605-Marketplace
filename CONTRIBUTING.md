@@ -28,8 +28,8 @@ If you disagree with a rule, raise it in the group chat. Do not just ignore it.
 ## 3. Shared names and IDs
 
 1. The names in [docs/SHARED-CONVENTIONS.md](docs/SHARED-CONVENTIONS.md) (`productId`, `customerId`, `orderId`, `warehouseId`, collection names, ID formats) must be used **exactly as written**: same spelling, same capital letters, same type.
-2. To change or add a shared name: agree it in the group chat first, then open a PR that updates `SHARED-CONVENTIONS.md`. Nobody renames a shared name on their own.
-3. Never write into another component's MongoDB collection. You may **read** it. If you need something changed there, ask the owner to provide a method.
+2. The shared names are **final**. Only the repository owner (Farshad) changes `SHARED-CONVENTIONS.md`; if you need a new shared name, ask him in the group chat. Nobody renames a shared name on their own.
+3. Never write into another component's MongoDB collection. You may **read** it. If you need something changed there, ask the owner to provide a method. The only exception is the stock update in `SHARED-CONVENTIONS.md` Q5.
 
 ## 4. Commits
 
